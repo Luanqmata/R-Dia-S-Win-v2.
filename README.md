@@ -1,5 +1,4 @@
 # R-Dia-S-Win-v2.
-Este é um Power Shell Script que possui: ➡️ WMap ➡️DNS Scan ➡️ ComputerInfo ➡️ UserManager ➡️ GroupManager
 
 ![image](https://github.com/user-attachments/assets/7f552604-81d8-45aa-b088-e2ad6845a7d6)
 
