@@ -1019,7 +1019,7 @@ while ($true) {
         }
         0 {
           Write-Host "`n+--------------------------------------------------+" -ForegroundColor Green
-          Write-Host "|         Obrigado por testar RèDiasWIn            |" -ForegroundColor Green
+          Write-Host "|         Obrigado por testar R-DiasWIn            |" -ForegroundColor Green
           Write-Host "+--------------------------------------------------+" -ForegroundColor Green
           return
         }
