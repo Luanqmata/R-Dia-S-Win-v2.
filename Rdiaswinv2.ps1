@@ -37,12 +37,13 @@ function Show-ComputerInfo {
     $uacStatus = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System").EnableLUA -eq 1
 
     Write-Host "`n=== Informacoes do Computador ===" -ForegroundColor Cyan
+
     Write-Host "`n      [Usuario]" -ForegroundColor Yellow
     Write-Host "Usuario atual: $usuario"
 
     Write-Host "`n       [Rede]" -ForegroundColor Yellow
     Write-Host "Nome do computador: $nomeComputador"
-    Write-Host "Endereço IP: $ip"
+    Write-Host "Endereco IP: $ip"
     Write-Host "Portas TCP abertas: $portasTCP"
     Write-Host "Portas UDP abertas: $portasUDP"
     if ($portasAbertasPerigosas) {
@@ -59,17 +60,18 @@ function Show-ComputerInfo {
 
     Write-Host "`n      [Hardware]" -ForegroundColor Yellow
     Write-Host "Processador (CPU): $cpu"
-    Write-Host "Memória RAM total: $memoriaRAMGB GB"
+    Write-Host "Memoria RAM total: $memoriaRAMGB GB"
     Write-Host "Espaco em disco (C:):"
     Write-Host "  - Total: $espacoTotalGB GB"
     Write-Host "  - Livre: $espacoLivreGB GB"
 
-    Write-Host "`n      [Segurança]" -ForegroundColor Yellow
-    Write-Host "Firewall ativo: $(if ($firewallStatus) { 'Sim' } else { 'Não' })"
-    Write-Host "Atualizacoes automaticas: $(if ($updateStatus -eq 4) { 'Sim' } else { 'Não' })"
-    Write-Host "Antivirus instalado e ativo: $(if ($antivirusStatus) { 'Sim' } else { 'Não' })"
-    Write-Host "BitLocker ativado: $(if ($bitlockerStatus) { 'Sim' } else { 'Não' })"
-    Write-Host "UAC (Controle de Conta de Usuario) ativado: $(if ($uacStatus) { 'Sim' } else { 'Não' })"
+    Write-Host "`n      [Seguranca]" -ForegroundColor Yellow
+    Write-Host "Firewall ativo: $(if ($firewallStatus) { 'Sim' } else { 'Nao' })"
+    Write-Host "Atualizacoes automaticas: $(if ($updateStatus -eq 4) { 'Sim' } else { 'Nao' })"
+    Write-Host "Antivirus instalado e ativo: $(if ($antivirusStatus) { 'Sim' } else { 'Nao' })"
+    Write-Host "BitLocker ativado: $(if ($bitlockerStatus) { 'Sim' } else { 'Nao' })"
+    Write-Host "UAC (Controle de Conta de Usuario) ativado: $(if ($uacStatus) { 'Sim' } else { 'Nao' })"
+
     Write-Host "`n===============================`n" -ForegroundColor Cyan
 
     $detalhes = Read-Host "`n`nVoce deseja obter informacoes mais detalhadas? (1/0)"
@@ -82,109 +84,117 @@ function Show-ComputerInfo {
     $null = Read-Host
 
     Clear-Host
+
 }
 
 function Show-UserInfo {
     function Show-Menu {
         Clear-Host
-        Write-Host "`n`n`n`n`n`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Red
-        Write-Host "║                     === Menu de Informacoes de Usuarios ===                  ║" -ForegroundColor Red
-        Write-Host "╠══════════════════════════════════════════════════════════════════════════════╣" -ForegroundColor Red
-        Write-Host "║  1. Listar Usuarios                                                          ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  2. Visualizar Informacoes de um Usuario                                     ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  3. Exibir Grupos                                                            ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  4. Criar um Usuario                                                         ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  5. Escalar Privilegios                                                      ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  6. Deletar um Usuario        ( CUIDADO !!!)                                 ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  7. Mostrar Usuarios Logados                                                 ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║  8. Voltar ao menu inicial                                                   ║" -ForegroundColor Red
-        Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝`n`n" -ForegroundColor Red
+        Write-Host "`n`n`n`n`n`n=====================================================" -ForegroundColor Cyan
+        Write-Host "       === Menu de Informacoes de Usuarios ===                 " -ForegroundColor Cyan
+        Write-Host "=====================================================" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  1. Listar Usuarios                             ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  2. Visualizar Informacoes de um Usuario        ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  3. Exibir Grupos                               ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  4. Criar um Usuario                            ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  5. Escalar Privilegios                         ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  6. Deletar um Usuario   ( CUIDADO !!!)         ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  7. Mostrar Usuarios Logados                    ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "||  8. Voltar ao menu inicial                      ||" -ForegroundColor Cyan
+        Write-Host "||                                                 ||" -ForegroundColor Cyan
+        Write-Host "=====================================================" -ForegroundColor Cyan
+    }
+
+    function List-Users1 {
+        Write-Host "`n=== Lista de Usuarios ===" -ForegroundColor Cyan
+        net user | ForEach-Object { Write-Host $_ }
+        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+        $null = Read-Host
     }
 
     function List-Users {
-        Write-Host "`n=== Lista de Usuarios ===" -ForegroundColor Green
+        Write-Host "`n=== Lista de Usuarios ===" -ForegroundColor Cyan
         net user | ForEach-Object { Write-Host $_ }
     }
 
     function Get-UserInfo {
         net user | ForEach-Object { Write-Host $_ }
         $username = Read-Host "`nDigite o nome do usuario"
-        Write-Host "`n=== Informacoes do Usuario: $username ===" -ForegroundColor Green
+        Write-Host "`n=== Informacoes do Usuario: $username ===" -ForegroundColor Cyan
         net user $username | ForEach-Object { Write-Host $_ }
+        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+        $null = Read-Host
     }
 
     function Show-Groups {
-        Write-Host "`n=== Lista de Grupos ===" -ForegroundColor Green
+        Write-Host "`n=== Lista de Grupos ===" -ForegroundColor Cyan
         net localgroup | ForEach-Object { Write-Host $_ }
 
         $choice = Read-Host "`nDeseja visualizar os membros de algum grupo? (1 para Sim, 0 para Nao)"
         if ($choice -eq 1) {
             $groupName = Read-Host "Digite o nome do grupo"
-            Write-Host "`n=== Membros do Grupo: $groupName ===" -ForegroundColor Green
+            Write-Host "`n=== Membros do Grupo: $groupName ===" -ForegroundColor Cyan
             net localgroup $groupName | ForEach-Object { Write-Host $_ }
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+            $null = Read-Host
         }
     }
 
     function Create-User {
-        $username = Read-Host "Digite o nome do novo usuario"
+        $username = Read-Host "`nDigite o nome do novo usuario"
         $password = Read-Host "Digite a senha para o novo usuario" -AsSecureString
         $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
         net user $username $password /ADD
-        Write-Host "Usuario $username criado com sucesso!" -ForegroundColor Green
+        Write-Host "Usuario $username criado com sucesso!" -ForegroundColor Cyan
+        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+        $null = Read-Host
     }
 
-    function Melhora-Previlegios {  ## FICAR DE OLHO
+    function Melhora-Previlegios {
         while ($true) {
             Clear-Host
-            Write-Host "`n`n`n`n`n`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Red
-            Write-Host "║                     === Menu de Previlegios Win ===                          ║" -ForegroundColor Red
-            Write-Host "╠══════════════════════════════════════════════════════════════════════════════╣" -ForegroundColor Red
-            Write-Host "║  1. Adicionar usuario ao grupo de administradores                            ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  2. Adicionar usuario a um grupo especifico                                  ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  3. Adicionar usuario a todos os grupos                                      ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  4. Adicionar user a grupo de Ass.Global        (Ainda nao funciona)         ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  5. Sair                                                                     ║" -ForegroundColor Red
-            Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝`n`n" -ForegroundColor Red
-            
-            
+            Write-Host "`n`n`n`n`n`n"
+            Write-Host "========================================================================" -ForegroundColor DarkCyan
+            Write-Host "===                    Menu de Previlegios Win                       ===" -ForegroundColor DarkCyan
+            Write-Host "========================================================================" -ForegroundColor DarkCyan
+            Write-Host "`n  [1] Adicionar usuario ao grupo de administradores" -ForegroundColor DarkCyan
+            Write-Host "`n  [2] Adicionar usuario a um grupo especifico" -ForegroundColor DarkCyan
+            Write-Host "`n  [3] Adicionar usuario a todos os grupos" -ForegroundColor DarkCyan
+            Write-Host "`n  [4] Adicionar usuario ao grupo de Ass.Global (Ainda nao funciona)" -ForegroundColor DarkCyan
+            Write-Host "`n  [5] Sair" -ForegroundColor DarkCyan
+            Write-Host "`n======================================================================`n`n" -ForegroundColor DarkCyan
+
             $opcao = Read-Host "`nEscolha uma opcao (1-5)"
 
-            switch ($opcao) {
+            switch ($opcao) { 
                 1 {
-                    # Opção 1: Adicionar usuário ao grupo de administradores
                     List-Users
                     $username = Read-Host "`n`nDigite o nome do usuario que deseja adicionar ao grupo de administradores"
                     if (-not (UserExists $username)) {
                         Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
                         continue
                     }
                     try {
                         net localgroup Administradores $username /ADD
                         Write-Host "Usuario '$username' adicionado ao grupo de administradores com sucesso!" -ForegroundColor Green
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
                         $null = Read-Host
                     }
                     catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo de administradores. Certifique-se de que o PowerShell está sendo executado como administrador." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo de administradores. Certifique-se de que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
+                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
                         $null = Read-Host
                     }
                 }
                 2 {
-                    # Opção 2: Adicionar usuário a um grupo específico
                     List-Users
 
                     Write-Host "=== Lista de Grupos ===" -ForegroundColor Green
@@ -204,13 +214,12 @@ function Show-UserInfo {
                         $null = Read-Host
                     }
                     catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo '$groupname'. Certifique-se de que o grupo existe e que o PowerShell está sendo executado como administrador." -ForegroundColor Red
+                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo '$groupname'. Certifique-se de que o grupo existe e que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
                         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
                         $null = Read-Host
                     }
                 }
                 3 {
-                    # Opção 3: Adicionar usuário a todos os grupos
                     List-Users
                     $username = Read-Host "`n`nDigite o nome do usuario que deseja adicionar a todos os grupos"
                     if (-not (UserExists $username)) {
@@ -229,96 +238,95 @@ function Show-UserInfo {
                         $null = Read-Host
                     }
                     catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' a todos os grupos. Certifique-se de que o PowerShell está sendo executado como administrador." -ForegroundColor Red
+                        Write-Host "Erro ao adicionar o usuario '$username' a todos os grupos. Certifique-se de que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
                         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
                         $null = Read-Host
                     }
                 }
-                4 {  ## FUNÇÃO COM POSSIVEL MELHORIA
-                     # Solicita o nome do usuário
-                    $nomeUsuario = Read-Host "Digite o nome do usuário que deseja adicionar ao grupo"
-
-                    # Define o nome do grupo
-                    $nomeGrupo = "Associações de Grupo Global"
-
-                    # Adiciona o usuário ao grupo
+                4 {
+                    $nomeUsuario = Read-Host "Digite o nome do usuario que deseja adicionar ao grupo"
+                    $nomeGrupo = "Associações de Grupo Global"  ## escrever de maneira correta acentuada caso corromper (ex: Associações) == Associacoes de Grupo Global
                     try {
                         Add-ADGroupMember -Identity $nomeGrupo -Members $nomeUsuario
-                        Write-Host "Usuário '$nomeUsuario' adicionado ao grupo '$nomeGrupo' com sucesso!"
+                        Write-Host "Usuario '$nomeUsuario' adicionado ao grupo '$nomeGrupo' com sucesso!"
                         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
                         $null = Read-Host
                     } catch {
-                        Write-Host "Erro ao adicionar o usuário ao grupo: $_"
+                        Write-Host "Erro ao adicionar o usuario ao grupo: $_"
                         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
                         $null = Read-Host
                     }
                 }
                 5 {
-                    # Opção 5: Sair do loop
                     Write-Host "`nVoltando para menu de Usuarios..." -ForegroundColor Red
                     return
                 }
                 default {
-                    Write-Host "Opcao invalida. Por favor, escolha uma opcao valida (1-5)." -ForegroundColor Red
+                    Write-Host "`nOpcao invalida. Por favor, escolha uma opcao valida (1-5)." -ForegroundColor Red
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    $null = Read-Host
                 }
             }
         }
     }
-    ## subfunção da função : Melhora-Previlegios ;
+
     function UserExists($username) {
-        # Verifica se o usuário existe
-        $userExists = net user $username 2>&1 | Select-String "O nome da conta poderia não ser encontrado"
+        $userExists = net user $username 2>&1 | Select-String "O nome da conta poderia nao ser encontrado"
         return -not $userExists
     }
 
     function Delete-User {
         List-Users
         $username = Read-Host "Digite o nome do usuario que deseja deletar"
-    
         $confirm = Read-Host "Voce realmente deseja excluir o usuario '$username'? (s/n)"
-    
         if ($confirm -eq 's') {
             net user $username /DELETE
-            Write-Host "Usuario $username deletado com sucesso!" -ForegroundColor Green
+            Write-Host "Usuario $username deletado com sucesso!" -ForegroundColor Cyan
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+            $null = Read-Host
         } else {
-            Write-Host "Operação cancelada." -ForegroundColor Yellow
+            Write-Host "Operacao cancelada." -ForegroundColor Yellow
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+            $null = Read-Host
         }
     }
 
     function Show-LoggedInUsers {
-        Write-Host "`n=== Usuarios Atualmente Logados ===" -ForegroundColor Green
+        Write-Host "`n=== Usuarios Atualmente Logados ===" -ForegroundColor Cyan
         $usuariosLogados = Get-Process -IncludeUserName | Select-Object UserName -Unique
         if ($usuariosLogados.Count -eq 0) {
             Write-Host "Nenhum usuario logado no momento." -ForegroundColor Red
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+            $null = Read-Host
         }
         else {
             $usuariosLogados | ForEach-Object {
-                Write-Host "Usuario logado: $($_.UserName)"
+                Write-Host "`nUsuario logado: $($_.UserName)"
             }
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+            $null = Read-Host
         }
     }
 
-    do {
+    while ($true) {
         Show-Menu
-        $choice = Read-Host "Escolha uma opcao (1-8)"
+        $opcao = Read-Host "`nEscolha uma opcao (1-8)"
 
-        switch ($choice) {
-            1 { List-Users }
+        switch ($opcao) {
+            1 { List-Users1 }
             2 { Get-UserInfo }
             3 { Show-Groups }
             4 { Create-User }
             5 { Melhora-Previlegios }
             6 { Delete-User }
             7 { Show-LoggedInUsers }
-            8 { Write-Host "Saindo..." -ForegroundColor Yellow; break }
-            default { Write-Host "Opcao invalida. Tente novamente." -ForegroundColor Red }
+            8 { return }
+            default { Write-Host "`nOpcao invalida. Escolha um numero de 1 a 8." -ForegroundColor Red 
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Red
+                    $null = Read-Host
+            }
         }
-
-        if ($choice -ne 8) {
-            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-            $null = Read-Host
-        }
-    } while ($choice -ne 8)
+    }
 }
 
 function Show-TCPPorts {
@@ -357,7 +365,7 @@ function Show-TCPPorts {
             Write-Host "Voltando ao menu inicial." -ForegroundColor Yellow
         }
         else {
-            Write-Host "Opção inválida. Voltando ao menu inicial." -ForegroundColor Red
+            Write-Host "Opcao invalida. Voltando ao menu inicial." -ForegroundColor Red
         }
 
         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
@@ -402,7 +410,7 @@ function Show-UDPPorts {
             Write-Host "Voltando ao menu inicial." -ForegroundColor Yellow
         }
         else {
-            Write-Host "Opção inválida. Voltando ao menu inicial." -ForegroundColor Red
+            Write-Host "Opcao invalida. Voltando ao menu inicial." -ForegroundColor Red
         }
     }
 
@@ -449,27 +457,27 @@ function Show-Apps {
 function Wmap {
     function Show-Menu {
         Clear-Host
-        Write-Host "`n`n`n`n`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                                 === WMap ===                                 ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "╠══════════════════════════════════════════════════════════════════════════════╣" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 1. Pingar IP                                                 ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 2. Criar Lista de IP                                         ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 3. Descobrir Maquinas Ativas de um IP                        ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 4. Pingar Porta Espcifica ( info )                           ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 5. Pingar todas as Portas de um ip                           ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 6. Pingar 100 portas mais usadas                             ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "║                 0. Menu Principal                                            ║" -ForegroundColor Red
-        Write-Host "║                                                                              ║" -ForegroundColor Red
-        Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝`n`n" -ForegroundColor Red
+        Write-Host "`n`n`n`n`n"
+        Write-Host "==================================================" -ForegroundColor Yellow
+        Write-Host "||                  === WMap ===                ||" -ForegroundColor Yellow
+        Write-Host "==================================================" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   1. Pingar IP                               ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   2. Criar Lista de IP                       ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   3. Descobrir Maquinas Ativas de um IP      ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   4. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   5. Pingar todas as Portas de um IP         ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   6. Pingar 100 portas mais usadas           ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   0. Menu Principal                          ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "==================================================`n`n" -ForegroundColor Yellow
     }
 
     function Pingar-Ip {
@@ -479,11 +487,11 @@ function Wmap {
         $pingResult = Test-Connection -ComputerName $ip -Count 3 -Quiet
         if ($pingResult) {
             Write-Host "`n               - - RED TEAM - - " -ForegroundColor Red
-            ping -n 5 $ip | Select-String "bytes=32"
+            ping -n 2 $ip | Select-String "bytes=32"
             Write-Host "`n`nO host: $ip :ONLINE" -ForegroundColor Green
         } else {
             ping -n 5 $ip | Select-String "bytes=32"
-            Write-Host "`n`nFalha ao pingar o host: $ip :OFFLINE" -ForegroundColor Red
+            Write-Host "`n`nFalha ao pingar o host: $ip :OFFLINE" -ForegroundColor Yellow
         }
     }
 
@@ -492,7 +500,7 @@ function Wmap {
         $baseIP = Read-Host "Digite a parte inicial do IP (Ex: 192.168.10.)"
     
         if (-not $baseIP.EndsWith(".")) {
-            Write-Host "Formato inválido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
+            Write-Host "Formato invalido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
             return
         }
 
@@ -507,32 +515,31 @@ function Wmap {
         }
 
     function Pingar-Ip-Rede {
-        Write-Host "`n"
-        $baseIP = Read-Host "Digite a parte inicial do IP (Ex: 192.168.10.) ( esse comando vai pingar todos os endereços de 1 - 254 pode levar até 20 minutos)"
+        Write-Host "`n( esse comando vai pingar todos os enderecos de 1 - 254 pode levar ate 20 minutos )"
+        $baseIP = Read-Host "Digite a parte inicial do IP (Ex: 192.168.10.)"
 
-        # Verifica se o usuário digitou um valor válido
         if (-not $baseIP.EndsWith(".")) {
-            Write-Host "Formato inválido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
+            Write-Host "Formato invalido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
             return
         }
 
-        Write-Host "`nPingando endereços de 1 a 254 do IP $baseIP ..." -ForegroundColor Yellow
+        Write-Host "`nPingando enderecos de 1 a 254 do IP $baseIP ..." -ForegroundColor Yellow
 
         # Loop para pingar cada IP na rede
         foreach ($ip in 1..254) {
-            $fullIP = "$baseIP$ip" # Concatena a base do IP com o número atual
-            Write-Host "`nPingando $fullIP..." -ForegroundColor Cyan
+            $fullIP = "$baseIP$ip" # Concatena a base do IP com o numero atual
+            Write-Host "`nPingando: $fullIP " -ForegroundColor Yellow
             $result = ping -n 1 $fullIP | Select-String "bytes=32"
 
             # Exibe o resultado do ping
             if ($result) {
                 Write-Host "$fullIP respondeu ao ping." -ForegroundColor Green
             } else {
-                Write-Host "$fullIP não respondeu ao ping." -ForegroundColor Red
+                Write-Host "$fullIP nao respondeu ao ping." -ForegroundColor Red
             }
         }
 
-        Write-Host "`nPing concluído!" -ForegroundColor Yellow
+        Write-Host "`nPing conclui­do!" -ForegroundColor Yellow
     }
 
     function Pingar-Porta-IP {
@@ -545,19 +552,16 @@ function Wmap {
             return
         }
 
-        # Valida se a porta é um número válido
         if (-not ($porta -match '^\d+$') -or [int]$porta -lt 1 -or [int]$porta -gt 65535) {
-            Write-Host "`nPorta inválida. A porta deve ser um número entre 1 e 65535." -ForegroundColor Red
+            Write-Host "`nPorta invalida. A porta deve ser um numero entre 1 e 65535." -ForegroundColor Red
             return
         }
 
         Write-Host "`nVerificando a porta $porta no IP $ip..." -ForegroundColor Yellow
 
-        # Testa a conexão com o IP e a porta e obtém detalhes completos
         $resultado = Test-NetConnection -ComputerName $ip -Port $porta -WarningAction SilentlyContinue
 
-        # Exibe os detalhes da conexão
-        Write-Host "`n=== Detalhes da Conexão ===" -ForegroundColor Cyan
+        Write-Host "`n=== Detalhes da Conexao ===" -ForegroundColor Cyan
         Write-Host "ComputerName: $($resultado.ComputerName)" -ForegroundColor Green
         Write-Host "RemoteAddress: $($resultado.RemoteAddress)" -ForegroundColor Green
         Write-Host "RemotePort: $($resultado.RemotePort)" -ForegroundColor Green
@@ -566,11 +570,10 @@ function Wmap {
         Write-Host "PingReplyDetails (RTT): $($resultado.PingReplyDetails.RoundtripTime) ms" -ForegroundColor Green
         Write-Host "TcpTestSucceeded: $($resultado.TcpTestSucceeded)" -ForegroundColor Green
 
-        # Resultado do teste de porta
         if ($resultado.TcpTestSucceeded) {
-            Write-Host "`nPorta $porta está aberta no IP $ip." -ForegroundColor Green
+            Write-Host "`nPorta $porta esta aberta no IP $ip." -ForegroundColor Green
         } else {
-            Write-Host "`nPorta $porta está fechada no IP $ip." -ForegroundColor Red
+            Write-Host "`nPorta $porta esta fechada no IP $ip." -ForegroundColor Red
         }
     }
 
@@ -578,7 +581,6 @@ function Wmap {
         param (
             [string]$ip
         )
-        # Expressão regular para validar um endereço IPv4
         $regex = '^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
         return ($ip -match $regex)
     }
@@ -590,12 +592,12 @@ function Wmap {
         do {
             $ip = Read-Host "Digite o IP (alvo)"
             if (-not (Validar-IP $ip)) {
-                Write-Host "Endereço IP inválido. Tente novamente." -ForegroundColor Red
+                Write-Host "Endereco IP invalido. Tente novamente." -ForegroundColor Yellow
                 return
             }
         } while (-not (Validar-IP $ip))
     
-        Write-Host "`nIniciando Scan..."
+        Write-Host "`n- Scan Iniciado -" -ForegroundColor Yellow
         $totalPortas = 65535
         $portasAbertas = @()
 
@@ -616,11 +618,10 @@ function Wmap {
         Write-Host "`n"
     
         do {
-            Write-Host "`n"
             Write-Host "Obs:(Esta acao pode levar alguns minutos:100 portas)"
             $ip = Read-Host "Digite o IP (alvo)"
             if (-not (Validar-IP $ip)) {
-                Write-Host "Endereço IP inválido. Tente novamente." -ForegroundColor Red
+                Write-Host "Endereco IP invlido. Tente novamente." -ForegroundColor Yellow
                 return
             }
         } while (-not (Validar-IP $ip))
@@ -663,11 +664,11 @@ function Wmap {
             5 { Pingar-Todas-Portas-Ip }
             6 { Pingar-Portas-Comuns-Ip }
             0 { Write-Host "Voltando ao menu principal..." -ForegroundColor Yellow; break }
-            default { Write-Host "Opcao invalida. Tente novamente." -ForegroundColor Red }
+            default { Write-Host "`nOpcao invalida. Escola um numero entre 1 a 6." -ForegroundColor Yellow }
         }
 
         if ($choice -ne 0) {
-            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Yellow
             $null = Read-Host
         }
     } while ($choice -ne 0)
@@ -678,283 +679,274 @@ function Busca-Por-DNS {
             "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.0.0 Safari/537.36"
         }
 
-        # === Funções ===
+        # === Funcoes ===
         function ScanHeaders {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Escaneando Headers..." -ForegroundColor Cyan
+                Write-Host "`n Escaneando Headers..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Method Head -Headers $headers -ErrorAction Stop
-                Write-Host "`n📌 O servidor roda:" -ForegroundColor Green
+                Write-Host "`n O servidor roda:" -ForegroundColor Green
                 $response.Headers.Server
             } catch {
-                Write-Host "⚠️ Erro ao buscar headers: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar headers: $_" -ForegroundColor Red
             }
         }
 
         function ScanOptions {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Verificando métodos HTTP suportados..." -ForegroundColor Cyan
+                Write-Host "`n Verificando metodos HTTP suportados..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Method Options -Headers $headers -ErrorAction Stop
-                Write-Host "`n✅ Métodos permitidos pelo servidor:" -ForegroundColor Green
+                Write-Host "`n Metodos permitidos pelo servidor:" -ForegroundColor Green
                 $response.Headers.Allow
             } catch {
-                Write-Host "⚠️ Erro ao buscar métodos OPTIONS: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar metodos OPTIONS: $_" -ForegroundColor Red
             }
         }
 
         function ScanLinks {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Procurando links na página..." -ForegroundColor Cyan
+                Write-Host "`n Procurando links na pagina..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Headers $headers -ErrorAction Stop
-                Write-Host "`n🔗 Links encontrados:" -ForegroundColor Green
+                Write-Host "`n Links encontrados:" -ForegroundColor Green
                 $response.Links.Href | Select-String http
             } catch {
-                Write-Host "⚠️ Erro ao buscar links: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar links: $_" -ForegroundColor Red
             }
         }
 
         function ScanHTML {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Obtendo código-fonte do HTML..." -ForegroundColor Cyan
+                Write-Host "`n Obtendo codigo-fonte do HTML..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Headers $headers -ErrorAction Stop
-                Write-Host "`n📝 Código HTML recebido:" -ForegroundColor Green
+                Write-Host "`n Codigo HTML recebido:" -ForegroundColor Green
                 Write-Host $response.Content.Substring(0, 500) # Exibe os primeiros 500 caracteres
             } catch {
-                Write-Host "⚠️ Erro ao obter o HTML: $_" -ForegroundColor Red
+                Write-Host "`nErro ao obter o HTML: $_" -ForegroundColor Red
             }
         }
 
         function ScanTech {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Detectando tecnologias utilizadas..." -ForegroundColor Cyan
+                Write-Host "`n Detectando tecnologias utilizadas..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Headers $headers -ErrorAction Stop
                 if ($response.Headers["x-powered-by"]) {
-                    Write-Host "`n⚙️ Tecnologia detectada:" -ForegroundColor Green
+                    Write-Host "`n Tecnologia detectada:" -ForegroundColor Green
                     $response.Headers["x-powered-by"]
                 } else {
-                    Write-Host "❌ Nenhuma tecnologia detectada nos headers."
+                    Write-Host "Nenhuma tecnologia detectada nos headers."
                 }
             } catch {
-                Write-Host "⚠️ Erro ao buscar tecnologias: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar tecnologias: $_" -ForegroundColor Red
             }
         }
 
         function ScanStatusCode {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Obtendo código de status HTTP..." -ForegroundColor Cyan
+                Write-Host "`n Obtendo codigo de status HTTP..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Headers $headers -ErrorAction Stop
-                Write-Host "`n✅ Status Code:" -ForegroundColor Green
+                Write-Host "`n Status Code:" -ForegroundColor Green
                 $response.StatusCode
             } catch {
-                Write-Host "⚠️ Erro ao obter Status Code: $_" -ForegroundColor Red
+                Write-Host "`nErro ao obter Status Code: $_" -ForegroundColor Red
             }
         }
 
         function ScanTitle {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Obtendo título da página..." -ForegroundColor Cyan
+                Write-Host "`n Obtendo titulo da pagina..." -ForegroundColor Cyan
                 $response = Invoke-WebRequest -Uri $url -Headers $headers -ErrorAction Stop
                 if ($response.ParsedHtml.title) {
-                    Write-Host "`n🏷️ Título da página:" -ForegroundColor Green
+                    Write-Host "`n Titulo da pagina:" -ForegroundColor Green
                     $response.ParsedHtml.title
                 } else {
-                    Write-Host "❌ Nenhum título encontrado."
+                    Write-Host "`nNenhum titulo encontrado."
                 }
             } catch {
-                Write-Host "⚠️ Erro ao obter título da página: $_" -ForegroundColor Red
+                Write-Host "`nErro ao obter titulo da pagina: $_" -ForegroundColor Red
             }
         }
 
         function ScanRobotsTxt {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Procurando robots.txt..." -ForegroundColor Cyan
+                Write-Host "`n Procurando robots.txt..." -ForegroundColor Cyan
                 $robotsUrl = "$url/robots.txt"
                 $response = Invoke-WebRequest -Uri $robotsUrl -Headers $headers -ErrorAction Stop
-                Write-Host "`n🤖 Conteúdo do robots.txt:" -ForegroundColor Green
+                Write-Host "`n Conteudo do robots.txt:" -ForegroundColor Green
                 Write-Host $response.Content
             } catch {
-                Write-Host "⚠️ Erro ao buscar robots.txt: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar robots.txt: $_" -ForegroundColor Red
             }
         }
 
         function ScanSitemap {
             param ([string]$url)
             try {
-                Write-Host "`n🔍 Verificando sitemap.xml..." -ForegroundColor Cyan
+                Write-Host "`n Verificando sitemap.xml..." -ForegroundColor Cyan
                 $sitemapUrl = "$url/sitemap.xml"
                 $response = Invoke-WebRequest -Uri $sitemapUrl -Headers $headers -ErrorAction Stop
-                Write-Host "`n🗺️ Sitemap encontrado:" -ForegroundColor Green
+                Write-Host "`n Sitemap encontrado:" -ForegroundColor Green
                 Write-Host $response.Content.Substring(0, 500)
             } catch {
-                Write-Host "⚠️ Erro ao buscar sitemap.xml: $_" -ForegroundColor Red
+                Write-Host "`nErro ao buscar sitemap.xml: $_" -ForegroundColor Red
             }
         }
 
         function ScanPorts {
             param ([string]$host)
             $ports = @(21, 22, 25, 53, 80, 110, 143, 443, 3306, 8080)
-            Write-Host "`n🔍 Escaneando portas comuns..." -ForegroundColor Cyan
+            Write-Host "`n Escaneando portas comuns..." -ForegroundColor Cyan
             foreach ($port in $ports) {
                 try {
                     $tcp = New-Object System.Net.Sockets.TcpClient
                     $tcp.Connect($host, $port)
-                    Write-Host "🟢 Porta $port aberta!" -ForegroundColor Green
+                    Write-Host "Porta $port aberta!" -ForegroundColor Green
                     $tcp.Close()
                 } catch {
-                    Write-Host "🔴 Porta $port fechada."
+                    Write-Host "Porta $port fechada."
                 }
             }
         }
-
+        
         function RunAllScans {
             param ([string]$url)
 
-            Write-Host "`n=== Iniciando todas as verificações para a URL: $url ===`n" -ForegroundColor Cyan
+            Write-Host "`n=== Iniciando todas as verificacoes para a URL: $url ===`n" -ForegroundColor Magenta
 
-            # 1. Captura Headers do Servidor
-            Write-Host "`n=== 1. Captura Headers do Servidor ===" -ForegroundColor Yellow
+            Write-Host "`n=== 1. Captura Headers do Servidor ===" -ForegroundColor Magenta
             ScanHeaders -url $url
 
-            # 2. Descobre os Métodos HTTP Permitidos
-            Write-Host "`n=== 2. Descobre os Métodos HTTP Permitidos ===" -ForegroundColor Yellow
+            Write-Host "`n=== 2. Descobre os Metodos HTTP Permitidos ===" -ForegroundColor Magenta
             ScanOptions -url $url
 
-            # 3. Lista os Links Encontrados no HTML
-            Write-Host "`n=== 3. Lista os Links Encontrados no HTML ===" -ForegroundColor Yellow
+            Write-Host "`n=== 3. Lista os Links Encontrados no HTML ===" -ForegroundColor Magenta
             ScanLinks -url $url
 
-            # 4. Obtém Código-Fonte do HTML
-            Write-Host "`n=== 4. Obtém Código-Fonte do HTML ===" -ForegroundColor Yellow
+            Write-Host "`n=== 4. Obtem Codigo-Fonte do HTML ===" -ForegroundColor Magenta
             ScanHTML -url $url
 
-            # 5. Detecta Tecnologias Utilizadas
-            Write-Host "`n=== 5. Detecta Tecnologias Utilizadas ===" -ForegroundColor Yellow
+            Write-Host "`n=== 5. Detecta Tecnologias Utilizadas ===" -ForegroundColor Magenta
             ScanTech -url $url
 
-            # 6. Obtém Código de Status HTTP
-            Write-Host "`n=== 6. Obtém Código de Status HTTP ===" -ForegroundColor Yellow
+            Write-Host "`n=== 6. Obtem Codigo de Status HTTP ===" -ForegroundColor Magenta
             ScanStatusCode -url $url
 
-            # 7. Obtém o <title> da Página
-            Write-Host "`n=== 7. Obtém o <title> da Página ===" -ForegroundColor Yellow
+            Write-Host "`n=== 7. Obtem o <title> da Pagina ===" -ForegroundColor Magenta
             ScanTitle -url $url
 
-            # 8. Verifica o arquivo robots.txt
-            Write-Host "`n=== 8. Verifica o arquivo robots.txt ===" -ForegroundColor Yellow
+            Write-Host "`n=== 8. Verifica o arquivo robots.txt ===" -ForegroundColor Magenta
             ScanRobotsTxt -url $url
 
-            # 9. Verifica se o site possui um Sitemap
-            Write-Host "`n=== 9. Verifica se o site possui um Sitemap ===" -ForegroundColor Yellow
+            Write-Host "`n=== 9. Verifica se o site possui um Sitemap ===" -ForegroundColor Magenta
             ScanSitemap -url $url
 
-            Write-Host "`n=== Todas as verificações foram concluídas! ===`n" -ForegroundColor Cyan
-            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+            Write-Host "`n=== Todas as verificacoes foram conclui­das! ===`n" -ForegroundColor Magenta
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
             $null = Read-Host
         }
 
-        # === Menu Principal ===
         while ($true) {
             Clear-Host
-            Write-Host "`n`n`n`n`n`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║                     === Menu de busca por DNS ===                            ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "╠══════════════════════════════════════════════════════════════════════════════╣" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  1. Captura Headers do Servidor                                              ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  2. Descobre os Métodos HTTP Permitidos                                      ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  3. Lista os Links Encontrados no HTML                                       ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  4. Obtém Código-Fonte do HTML                                               ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  5. Detecta Tecnologias Utilizadas                                           ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  6. Obtém Código de Status HTTP                                              ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  7. Obtém o <title> da Página                                                ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  8. Verifica o arquivo robots.txt                                            ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║  9. Verifica se o site possui um Sitemap                                     ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║ 10. Faz um Scan Rápido das Portas Comuns                                     ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║ 11. Rodar todas opcoes ( 1 a 9 )                                             ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "║ 12. Voltar para o Menu-Principal                                             ║" -ForegroundColor Red
-            Write-Host "║                                                                              ║" -ForegroundColor Red
-            Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝`n`n" -ForegroundColor Red
+            Write-Host "`n`n`n`n`n`n+------------------------------------------------+" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|         === Menu de busca por DNS ===          |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "+------------------------------------------------+" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      1. Captura Headers do Servidor            |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      2. Descobre os Metodos HTTP Permitidos    |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      3. Lista os Links Encontrados no HTML     |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      4. Obtem Codigo-Fonte do HTML             |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      5. Detecta Tecnologias Utilizadas         |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      6. Obtem Codigo de Status HTTP            |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      7. Obtem o <title> da Pagina              |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      8. Verifica o arquivo robots.txt          |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      9. Verifica se o site possui um Sitemap   |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      10. Faz um Scan Rapido das Portas Comuns  |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      11. Rodar todas opcoes (1 a 9)            |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "|      12. Voltar para o Menu Principal          |" -ForegroundColor Magenta
+            Write-Host "|                                                |" -ForegroundColor Magenta
+            Write-Host "+------------------------------------------------+" -ForegroundColor Magenta
+            Write-Host "`n`n"
 
-            $opcao = Read-Host "`nEscolha uma opcao (1-11)"
+            $opcao = Read-Host "`nEscolha uma opcao (1-12)"
         
             switch ($opcao) {
                 1 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanHeaders -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 2 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanOptions -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 3 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanLinks -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 4 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanHTML -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 5 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanTech -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 6 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanStatusCode -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 7 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanTitle -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 8 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanRobotsTxt -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 9 {
                     $url = Read-Host "`nDigite a URL do site (ex: https://exemplo.com)"
                     ScanSitemap -url $url
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 10 {
                     $host = Read-Host "`nDigite o host ou IP (ex: exemplo.com ou 192.168.1.1)"
                     ScanPorts -host $host
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
                 11{
@@ -962,77 +954,79 @@ function Busca-Por-DNS {
                     RunAllScans -url $url
                 }
                 12 {
-                    Write-Host "`nSaindo..." -ForegroundColor Green
+                    Write-Host "`nSaindo..." -ForegroundColor Magenta
                     return
                 }
                 default {
-                    Write-Host "`n❌ Opção inválida. Por favor, escolha uma opção entre 1 e 11." -ForegroundColor Red
-                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    Write-Host "`nOpcao invalida. Escolha um numero entre 1 a 12." -ForegroundColor Magenta
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Magenta
                     $null = Read-Host
                 }
             }
         }
-    }
 
+}
+        
 while ($true) {
     Clear-Host
-    Write-Host "`n`n`n`n`n`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                          === Menu Principal ===                              ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "╠══════════════════════════════════════════════════════════════════════════════╣" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 1. Mostrar informações do computador                         ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 2. Informações avançadas de Usuários                         ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 3. Listar portas TCP abertas                                 ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 4. Listar portas UDP abertas                                 ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 5. Listar aplicativos em USO                                 ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 6. WMap                                                      ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 7. DNS Request's                                             ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "║                 0. Sair                                                      ║" -ForegroundColor Green
-    Write-Host "║                                                                              ║" -ForegroundColor Green
-    Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor Green
-    $opcao = Read-Host "`nEscolha uma opção (1-0)" 
+    Write-Host "`n`n`n`n`n`n+------------------------------------------------------------------+" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                       === Menu Principal ===                     |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "+------------------------------------------------------------------+" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 1. Mostrar informacoes do computador             |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 2. Informacoes avancadas de Usuarios             |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 3. Listar portas TCP abertas                     |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 4. Listar portas UDP abertas                     |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 5. Listar aplicativos em uso                     |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 6. WMap                                          |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 7. DNS Requests                                  |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "|                 0. Sair                                          |" -ForegroundColor Green
+    Write-Host "|                                                                  |" -ForegroundColor Green
+    Write-Host "+------------------------------------------------------------------+" -ForegroundColor Green
 
-    if ($opcao -eq 1) {
-        Show-ComputerInfo
-    }
-    elseif ($opcao -eq 2) {
-        Show-UserInfo
-    }
-    elseif ($opcao -eq 3) {
-        Show-TCPPorts
-    }
-    elseif ($opcao -eq 4) {
-        Show-UDPPorts
-    }
-    elseif ($opcao -eq 5) {
-        Show-Apps
-    }
-    elseif ($opcao -eq 6){
-        Wmap
-    }
-    elseif ($opcao -eq 7){
-        Busca-Por-DNS
-    }
-    elseif ($opcao -eq 0) {
-        Write-Host "`n╔══════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor Red
-        Write-Host "║                                  Saindo...                                   ║" -ForegroundColor Red
-        Write-Host "╚══════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor Red
-        break
-    }
-    else {
-        Write-Host "Opção inválida. Tente novamente." -ForegroundColor Red
-        Write-Host "`nPressione qualquer tecla para continuar..."
-        $null = Read-Host
-
-        Clear-Host
+    $opcao = Read-Host "`nEscolha uma das opcoes de 1 a 7"
+    
+    switch ($opcao){
+        1{
+          Show-ComputerInfo
+        }
+        2{
+          Show-UserInfo
+         }
+        3 {
+          Show-TCPPorts
+        }
+        4 {
+          Show-UDPPorts
+        }
+        5 {
+          Show-Apps
+        }
+        6 {
+          Wmap
+        }
+        7 {
+          Busca-Por-DNS
+        }
+        0 {
+          Write-Host "`n+--------------------------------------------------+" -ForegroundColor Green
+          Write-Host "|         Obrigado por testar RèDiasWIn            |" -ForegroundColor Green
+          Write-Host "+--------------------------------------------------+" -ForegroundColor Green
+          return
+        }
+        default {
+          Write-Host "`nOpcao invalida. Escolha um numero entre 1 a 7." -ForegroundColor Yellow
+          Write-Host "`nPressione Enter para continuar..." -ForegroundColor Yellow
+          $null = Read-Host
+        }
     }
 }
