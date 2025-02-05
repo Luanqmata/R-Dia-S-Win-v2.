@@ -162,15 +162,23 @@ function Show-UserInfo {
         while ($true) {
             Clear-Host
             Write-Host "`n`n`n`n`n`n"
-            Write-Host "========================================================================" -ForegroundColor DarkCyan
-            Write-Host "===                    Menu de Previlegios Win                       ===" -ForegroundColor DarkCyan
-            Write-Host "========================================================================" -ForegroundColor DarkCyan
-            Write-Host "`n  [1] Adicionar usuario ao grupo de administradores" -ForegroundColor DarkCyan
-            Write-Host "`n  [2] Adicionar usuario a um grupo especifico" -ForegroundColor DarkCyan
-            Write-Host "`n  [3] Adicionar usuario a todos os grupos" -ForegroundColor DarkCyan
-            Write-Host "`n  [4] Adicionar usuario ao grupo de Ass.Global (Ainda nao funciona)" -ForegroundColor DarkCyan
-            Write-Host "`n  [5] Sair" -ForegroundColor DarkCyan
-            Write-Host "`n======================================================================`n`n" -ForegroundColor DarkCyan
+            Write-Host "||========================================================================||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||===                    Menu de Previlegios Win                       ===||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||========================================================================||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||  [1] Adicionar usuario ao grupo de administradores                     ||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||  [2] Adicionar usuario a um grupo especifico                           ||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||  [3] Adicionar usuario a todos os grupos                               ||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||  [4] Adicionar usuario ao grupo de Ass.Global (Ainda nao funciona)     ||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||  [5] Sair                                                              ||" -ForegroundColor DarkCyan
+            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+            Write-Host "||========================================================================||`n`n" -ForegroundColor DarkCyan
 
             $opcao = Read-Host "`nEscolha uma opcao (1-5)"
 
@@ -853,37 +861,37 @@ function Busca-Por-DNS {
 
         while ($true) {
             Clear-Host
-            Write-Host "`n`n`n`n`n`n+------------------------------------------------+" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|         === Menu de busca por DNS ===          |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "+------------------------------------------------+" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      1. Captura Headers do Servidor            |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      2. Descobre os Metodos HTTP Permitidos    |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      3. Lista os Links Encontrados no HTML     |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      4. Obtem Codigo-Fonte do HTML             |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      5. Detecta Tecnologias Utilizadas         |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      6. Obtem Codigo de Status HTTP            |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      7. Obtem o <title> da Pagina              |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      8. Verifica o arquivo robots.txt          |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      9. Verifica se o site possui um Sitemap   |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      10. Faz um Scan Rapido das Portas Comuns  |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      11. Rodar todas opcoes (1 a 9)            |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "|      12. Voltar para o Menu Principal          |" -ForegroundColor Magenta
-            Write-Host "|                                                |" -ForegroundColor Magenta
-            Write-Host "+------------------------------------------------+" -ForegroundColor Magenta
+            Write-Host "`n`n`n`n`n`n+==================================================+" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||         === Menu de busca por DNS ===          ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "+==================================================+" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      1. Captura Headers do Servidor            ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      2. Descobre os Metodos HTTP Permitidos    ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      3. Lista os Links Encontrados no HTML     ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      4. Obtem Codigo-Fonte do HTML             ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      5. Detecta Tecnologias Utilizadas         ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      6. Obtem Codigo de Status HTTP            ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      7. Obtem o <title> da Pagina              ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      8. Verifica o arquivo robots.txt          ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      9. Verifica se o site possui um Sitemap   ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      10. Faz um Scan Rapido das Portas Comuns  ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      11. Rodar todas opcoes (1 a 9)            ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "||      12. Voltar para o Menu Principal          ||" -ForegroundColor Magenta
+            Write-Host "||                                                ||" -ForegroundColor Magenta
+            Write-Host "+==================================================+" -ForegroundColor Magenta
             Write-Host "`n`n"
 
             $opcao = Read-Host "`nEscolha uma opcao (1-12)"
@@ -969,29 +977,29 @@ function Busca-Por-DNS {
         
 while ($true) {
     Clear-Host
-    Write-Host "`n`n`n`n`n`n+------------------------------------------------------------------+" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                       === Menu Principal ===                     |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "+------------------------------------------------------------------+" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 1. Mostrar informacoes do computador             |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 2. Informacoes avancadas de Usuarios             |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 3. Listar portas TCP abertas                     |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 4. Listar portas UDP abertas                     |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 5. Listar aplicativos em uso                     |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 6. WMap                                          |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 7. DNS Requests                                  |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "|                 0. Sair                                          |" -ForegroundColor Green
-    Write-Host "|                                                                  |" -ForegroundColor Green
-    Write-Host "+------------------------------------------------------------------+" -ForegroundColor Green
+    Write-Host "`n`n`n`n`n`n+====================================================================+" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                       === Menu Principal ===                     ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "+====================================================================+" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 1. Mostrar informacoes do computador             ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 2. Informacoes avancadas de Usuarios             ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 3. Listar portas TCP abertas                     ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 4. Listar portas UDP abertas                     ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 5. Listar aplicativos em uso                     ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 6. WMap                                          ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 7. DNS Requests                                  ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "||                 0. Sair                                          ||" -ForegroundColor Green
+    Write-Host "||                                                                  ||" -ForegroundColor Green
+    Write-Host "+====================================================================+" -ForegroundColor Green
 
     $opcao = Read-Host "`nEscolha uma das opcoes de 1 a 7"
     
@@ -1018,9 +1026,9 @@ while ($true) {
           Busca-Por-DNS
         }
         0 {
-          Write-Host "`n+--------------------------------------------------+" -ForegroundColor Green
-          Write-Host "|         Obrigado por testar R-DiasWIn            |" -ForegroundColor Green
-          Write-Host "+--------------------------------------------------+" -ForegroundColor Green
+          Write-Host "`n+====================================================================+" -ForegroundColor Green
+          Write-Host "||                 Obrigado por testar R-DiasWIn                    ||" -ForegroundColor Green
+          Write-Host "+====================================================================+" -ForegroundColor Green
           return
         }
         default {
