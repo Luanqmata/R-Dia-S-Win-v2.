@@ -654,7 +654,7 @@ function Wmap {
 
     do {
         Show-Menu
-        $choice = Read-Host "Escolha uma opcao (1-0)"
+        $choice = Read-Host "Escolha um numero de ( 1 - 6 )"
 
         switch ($choice) {
             1 { Pingar-Ip }
