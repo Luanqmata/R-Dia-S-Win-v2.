@@ -1,13 +1,12 @@
 # R-Dia-S-Win-v2.
 
-![image](https://github.com/user-attachments/assets/7f552604-81d8-45aa-b088-e2ad6845a7d6)
+![image](https://github.com/user-attachments/assets/9e84ea8c-4704-46d8-a0fc-c83b97b022f1)
 ------
-![image](https://github.com/user-attachments/assets/96e9a5ec-a039-4252-9607-5de1b7beaba3)
+![image](https://github.com/user-attachments/assets/c4879e26-2779-4090-ba70-f016c86db71f)
 ------
-![image](https://github.com/user-attachments/assets/8243d9fe-2867-4874-887f-872f43da4087)
+![image](https://github.com/user-attachments/assets/2d836b82-66a0-434a-997d-5d716581a0fc)
 ------
-![image](https://github.com/user-attachments/assets/f3a00a4f-24ca-44d3-badb-0a08ddbb098d)
+![image](https://github.com/user-attachments/assets/5a2c2260-bcd3-419f-89be-b84539a555b1)
 ------
-![image](https://github.com/user-attachments/assets/d08677ef-a2a6-45a5-a9f0-d6ed9e58b778)
-
+![image](https://github.com/user-attachments/assets/2fd678f4-8bb9-47ff-a8ba-5e26521a3509)
 ------
