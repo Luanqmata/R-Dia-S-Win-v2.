@@ -1,4 +1,4 @@
-# R-Dia-S-Win-v2.
+# R-Dia-S-Win-v2
 
 ![image](https://github.com/user-attachments/assets/9e84ea8c-4704-46d8-a0fc-c83b97b022f1)
 ------
