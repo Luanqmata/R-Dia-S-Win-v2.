@@ -10,3 +10,5 @@
 ------
 ![image](https://github.com/user-attachments/assets/2fd678f4-8bb9-47ff-a8ba-5e26521a3509)
 ------
+# MELHORIAS NO CODIGO:
+<img width="1273" height="1080" alt="image" src="https://github.com/user-attachments/assets/d5891252-db20-48b6-8516-1f91dccbf145" />
