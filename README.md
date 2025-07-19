@@ -11,4 +11,14 @@
 ![image](https://github.com/user-attachments/assets/2fd678f4-8bb9-47ff-a8ba-5e26521a3509)
 ------
 # MELHORIAS NO CODIGO:
+
 <img width="1273" height="1080" alt="image" src="https://github.com/user-attachments/assets/d5891252-db20-48b6-8516-1f91dccbf145" />
+
+---
+
+<img width="1920" height="935" alt="image" src="https://github.com/user-attachments/assets/325bb14a-c627-4f4d-a6a4-1dd3644f8fc4" />
+
+--- 
+
+![Uploading image.png…]()
+
