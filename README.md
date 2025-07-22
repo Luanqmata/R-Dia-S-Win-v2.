@@ -12,15 +12,8 @@
 ------
 # MELHORIAS NO CODIGO:
 
-<img width="1273" height="1080" alt="image" src="https://github.com/user-attachments/assets/d5891252-db20-48b6-8516-1f91dccbf145" />
-
----
 
 <img width="1920" height="935" alt="image" src="https://github.com/user-attachments/assets/325bb14a-c627-4f4d-a6a4-1dd3644f8fc4" />
-
---- 
-
-<img width="784" height="436" alt="image" src="https://github.com/user-attachments/assets/996424bd-effe-44bc-a0b9-cfe5d918ccaf" />
 
 ---
 
