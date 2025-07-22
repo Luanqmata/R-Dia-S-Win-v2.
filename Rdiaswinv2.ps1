@@ -43,7 +43,7 @@ function Show-ComputerInfo {
 
     Write-Host "`n       [Rede]" -ForegroundColor Yellow
     Write-Host "Nome do computador: $nomeComputador"
-    Write-Host "Endereco IP: $ip"
+    Write-Host "Endereco IP: $ip "
     Write-Host "Portas TCP abertas: $portasTCP"
     Write-Host "Portas UDP abertas: $portasUDP"
     if ($portasAbertasPerigosas) {
@@ -148,135 +148,169 @@ function Show-UserInfo {
         }
     }
 
-    function Create-User {
-        $username = Read-Host "`nDigite o nome do novo usuario"
-        $password = Read-Host "Digite a senha para o novo usuario" -AsSecureString
-        $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
-        net user $username $password /ADD
-        Write-Host "Usuario $username criado com sucesso!" -ForegroundColor Cyan
-        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
-        $null = Read-Host
+  function Create-User {
+    $username = Read-Host "`nDigite o nome do novo usuário"
+    $password = Read-Host "Digite a senha para o novo usuário" -AsSecureString
+    $plainPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
+        [Runtime.InteropServices.Marshal]::SecureStringToBSTR($password)
+    )
+
+    Try {
+        # Tenta criar o usuário
+        net user $username $plainPassword /ADD | Out-Null
+
+        # Aguarda alguns segundos para garantir que o sistema atualize
+        Start-Sleep -Seconds 1
+
+        # Verifica se o usuário realmente foi criado
+        if (Get-LocalUser -Name $username -ErrorAction SilentlyContinue) {
+            Write-Host "`nUsuário '$username' criado com sucesso!" -ForegroundColor Green
+        }
+        else {
+            Write-Host "`nErro: Usuário '$username' nao foi criado." -ForegroundColor Red
+        }
+    }
+    Catch {
+        Write-Host "`nFalha ao tentar criar o usuário: $_" -ForegroundColor Red
     }
 
-    function Melhora-Previlegios {
-        while ($true) {
-            Clear-Host
-            Write-Host "`n`n`n`n`n`n"
-            Write-Host "||========================================================================||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||===                    Menu de Previlegios Win                       ===||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||========================================================================||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||  [1] Adicionar usuario ao grupo de administradores                     ||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||  [2] Adicionar usuario a um grupo especifico                           ||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||  [3] Adicionar usuario a todos os grupos                               ||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||  [4] Adicionar usuario ao grupo de Ass.Global (Ainda nao funciona)     ||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||  [5] Sair                                                              ||" -ForegroundColor DarkCyan
-            Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
-            Write-Host "||========================================================================||`n`n" -ForegroundColor DarkCyan
+    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+    $null = Read-Host
+}
+function Melhora-Previlegios {
+    while ($true) {
+        Clear-Host
+        Write-Host "`n`n`n`n`n`n"
+        Write-Host "||========================================================================||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||===                    Menu de Previlegios Win                       ===||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||========================================================================||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||  [1] Adicionar usuario ao grupo de administradores                     ||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||  [2] Adicionar usuario a um grupo especifico                           ||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||  [3] Adicionar usuario a todos os grupos                               ||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||  [4] Adicionar usuario ao grupo de Ass.Global (Ainda nao funciona)     ||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||  [5] Sair                                                              ||" -ForegroundColor DarkCyan
+        Write-Host "||                                                                        ||" -ForegroundColor DarkCyan
+        Write-Host "||========================================================================||`n`n" -ForegroundColor DarkCyan
 
-            $opcao = Read-Host "`nEscolha uma opcao (1-5)"
+        $opcao = Read-Host "`nEscolha uma opcao (1-5)"
 
-            switch ($opcao) { 
-                1 {
-                    List-Users
-                    $username = Read-Host "`n`nDigite o nome do usuario que deseja adicionar ao grupo de administradores"
-                    if (-not (UserExists $username)) {
-                        Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
-                        continue
-                    }
-                    try {
-                        net localgroup Administradores $username /ADD
+        switch ($opcao) {
+            1 {
+                List-Users
+                $username = Read-Host "`n`nDigite o nome do usuario que deseja adicionar ao grupo de administradores"
+                if (-not (UserExists $username)) {
+                    Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
+                    continue
+                }
+                try {
+                    net localgroup Administradores $username /ADD | Out-Null
+                    $grupo = net localgroup Administradores
+                    if ($grupo -match $username) {
                         Write-Host "Usuario '$username' adicionado ao grupo de administradores com sucesso!" -ForegroundColor Green
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
-                        $null = Read-Host
-                    }
-                    catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo de administradores. Certifique-se de que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
-                        $null = Read-Host
+                    } else {
+                        Write-Host "Erro: Usuario '$username' nao foi adicionado ao grupo de administradores." -ForegroundColor Red
                     }
                 }
-                2 {
-                    List-Users
+                catch {
+                    Write-Host "Erro ao adicionar o usuario '$username'. Execute o PowerShell como administrador." -ForegroundColor Red
+                }
+                Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+                $null = Read-Host
+            }
 
-                    Write-Host "=== Lista de Grupos ===" -ForegroundColor Green
-                    net localgroup | ForEach-Object { Write-Host $_ }
-                    $username = Read-Host "Digite o nome do usuario que deseja adicionar a um grupo"
-                    if (-not (UserExists $username)) {
-                        Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                        continue
-                    }
-                    $groupname = Read-Host "`n`nDigite o nome do grupo ao qual deseja adicionar o usuario"
-                    try {
-                        net localgroup $groupname $username /ADD
-                        Write-Host "Usuario '$username' adicionado ao grupo '$groupname' com sucesso!" -ForegroundColor Green
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    }
-                    catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' ao grupo '$groupname'. Certifique-se de que o grupo existe e que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    }
-                }
-                3 {
-                    List-Users
-                    $username = Read-Host "`n`nDigite o nome do usuario que deseja adicionar a todos os grupos"
-                    if (-not (UserExists $username)) {
-                        Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                        continue
-                    }
-                    try {
-                        $groups = net localgroup | Where-Object { $_ -match "^\*" } | ForEach-Object { $_.TrimStart('*').Trim() }
-                        foreach ($group in $groups) {
-                            net localgroup $group $username /ADD
-                            Write-Host "Usuario '$username' adicionado ao grupo '$group' com sucesso!" -ForegroundColor Green
-                        }
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    }
-                    catch {
-                        Write-Host "Erro ao adicionar o usuario '$username' a todos os grupos. Certifique-se de que o PowerShell esta sendo executado como administrador." -ForegroundColor Red
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    }
-                }
-                4 {
-                    $nomeUsuario = Read-Host "Digite o nome do usuario que deseja adicionar ao grupo"
-                    $nomeGrupo = "Associações de Grupo Global"  ## escrever de maneira correta acentuada caso corromper (ex: Associações) == Associacoes de Grupo Global
-                    try {
-                        Add-ADGroupMember -Identity $nomeGrupo -Members $nomeUsuario
-                        Write-Host "Usuario '$nomeUsuario' adicionado ao grupo '$nomeGrupo' com sucesso!"
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    } catch {
-                        Write-Host "Erro ao adicionar o usuario ao grupo: $_"
-                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-                        $null = Read-Host
-                    }
-                }
-                5 {
-                    Write-Host "`nVoltando para menu de Usuarios..." -ForegroundColor Red
-                    return
-                }
-                default {
-                    Write-Host "`nOpcao invalida. Por favor, escolha uma opcao valida (1-5)." -ForegroundColor Red
+            2 {
+                List-Users
+                Write-Host "=== Lista de Grupos ===" -ForegroundColor Green
+                net localgroup | ForEach-Object { Write-Host $_ }
+
+                $username = Read-Host "Digite o nome do usuario que deseja adicionar a um grupo"
+                if (-not (UserExists $username)) {
+                    Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
                     Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
                     $null = Read-Host
+                    continue
                 }
+
+                $groupname = Read-Host "`nDigite o nome do grupo ao qual deseja adicionar o usuario"
+                try {
+                    net localgroup $groupname $username /ADD | Out-Null
+                    $verifica = net localgroup $groupname
+                    if ($verifica -match $username) {
+                        Write-Host "Usuario '$username' adicionado ao grupo '$groupname' com sucesso!" -ForegroundColor Green
+                    } else {
+                        Write-Host "Erro: Usuario '$username' nao foi adicionado ao grupo '$groupname'." -ForegroundColor Red
+                    }
+                }
+                catch {
+                    Write-Host "Erro: Certifique-se de que o grupo '$groupname' existe e o PowerShell está em modo administrador." -ForegroundColor Red
+                }
+                Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                $null = Read-Host
+            }
+
+            3 {
+                List-Users
+                $username = Read-Host "`nDigite o nome do usuario que deseja adicionar a todos os grupos"
+                if (-not (UserExists $username)) {
+                    Write-Host "Erro: O usuario '$username' nao existe." -ForegroundColor Red
+                    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                    $null = Read-Host
+                    continue
+                }
+                try {
+                    $groups = net localgroup | Where-Object { $_ -match "^\*" } | ForEach-Object { $_.TrimStart('*').Trim() }
+                    foreach ($group in $groups) {
+                        net localgroup $group $username /ADD | Out-Null
+                        $verifica = net localgroup $group
+                        if ($verifica -match $username) {
+                            Write-Host "Usuario '$username' adicionado ao grupo '$group' com sucesso!" -ForegroundColor Green
+                        } else {
+                            Write-Host "Erro: Usuario '$username' nao foi adicionado ao grupo '$group'." -ForegroundColor Red
+                        }
+                    }
+                }
+                catch {
+                    Write-Host "Erro ao adicionar o usuario a todos os grupos. Use PowerShell como administrador." -ForegroundColor Red
+                }
+                Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                $null = Read-Host
+            }
+
+            4 {
+                $nomeUsuario = Read-Host "Digite o nome do usuario que deseja adicionar ao grupo"
+                $nomeGrupo = "Associações de Grupo Global"  # Nome sem acento, como padrão
+
+                try {
+                    Add-ADGroupMember -Identity $nomeGrupo -Members $nomeUsuario
+                    Write-Host "Usuario '$nomeUsuario' adicionado ao grupo '$nomeGrupo' com sucesso!" -ForegroundColor Green
+                }
+                catch {
+                    Write-Host "Erro ao adicionar o usuario ao grupo: $_" -ForegroundColor Red
+                }
+                Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                $null = Read-Host
+            }
+
+            5 {
+                Write-Host "`nVoltando para menu de Usuarios..." -ForegroundColor Red
+                return
+            }
+
+            default {
+                Write-Host "`nOpção inválida. Por favor, escolha uma opção entre 1 e 5." -ForegroundColor Red
+                Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+                $null = Read-Host
             }
         }
     }
+}
 
     function UserExists($username) {
         $userExists = net user $username 2>&1 | Select-String "O nome da conta poderia nao ser encontrado"
@@ -285,18 +319,26 @@ function Show-UserInfo {
 
     function Delete-User {
         List-Users
-        $username = Read-Host "Digite o nome do usuario que deseja deletar"
+        $username = Read-Host "Digite o nome do usuario que deseja deletar: "
         $confirm = Read-Host "Voce realmente deseja excluir o usuario '$username'? (s/n)"
-        if ($confirm -eq 's') {
-            net user $username /DELETE
-            Write-Host "Usuario $username deletado com sucesso!" -ForegroundColor Cyan
-            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
-            $null = Read-Host
+        
+        if ($confirm.ToLower() -eq 's') {
+            if (Get-LocalUser -Name $username -ErrorAction SilentlyContinue) {
+                try {
+                    net user $username /DELETE
+                    Write-Host "Usuario $username deletado com sucesso!" -ForegroundColor Cyan
+                } catch {
+                    Write-Host "Erro ao deletar o usuario: $_" -ForegroundColor Red
+                }
+            } else {
+                Write-Host "Usuario '$username' nao encontrado." -ForegroundColor Red
+            }
         } else {
             Write-Host "Operacao cancelada." -ForegroundColor Yellow
-            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
-            $null = Read-Host
         }
+        
+        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
+        $null = Read-Host
     }
 
     function Show-LoggedInUsers {
