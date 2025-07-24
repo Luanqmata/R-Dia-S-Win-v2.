@@ -319,7 +319,7 @@ function Melhora-Previlegios {
 
     function Delete-User {
         List-Users
-        $username = Read-Host "Digite o nome do usuario que deseja deletar: "
+        $username = Read-Host "Digite o nome do usuario que deseja deletar"
         $confirm = Read-Host "Voce realmente deseja excluir o usuario '$username'? (s/n)"
         
         if ($confirm.ToLower() -eq 's') {
@@ -531,9 +531,9 @@ function Servicos {
         $escolha = Read-Host "Escolha uma das opcoes (0-3)"
 
         switch ($escolha) {
-            '1' { Show-TCPPorts }
+            '1' { Show-Apps }
             '2' { Show-UDPPorts }
-            '3' { Show-Apps }
+            '3' { Show-TCPPorts }
             '0' { Write-Host "`nVoltando para o menu inicial ..." -ForegroundColor Yellow }
             Default { Write-Host "`nOpcao invalida. Escolha um numero entre 0 e 3." -ForegroundColor Red 
                         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Red
@@ -544,6 +544,7 @@ function Servicos {
     } while ($escolha -ne '0')
 }
 
+
 function Wmap {
     function Show-Menu {
         Clear-Host
@@ -552,11 +553,11 @@ function Wmap {
         Write-Host "||                  === WMap ===                ||" -ForegroundColor Yellow
         Write-Host "==================================================" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   1. Pingar IP                               ||" -ForegroundColor Yellow
+        Write-Host "||   1. Descobrir se o Host esta ativo          ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   2. Criar Lista de IP                       ||" -ForegroundColor Yellow
+        Write-Host "||   2. Criar Lista (192.168.10.xxx) 1 a 254    ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   3. Descobrir Maquinas Ativas de um IP      ||" -ForegroundColor Yellow
+        Write-Host "||   3. Varredura de pings (192.168.10.xxx)     ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   4. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
@@ -576,7 +577,7 @@ function Wmap {
         Write-Host "`nEfetuando ping no host: $ip"
         $pingResult = Test-Connection -ComputerName $ip -Count 3 -Quiet
         if ($pingResult) {
-            Write-Host "`n               - - RED TEAM - - " -ForegroundColor Red
+            Write-Host "`n                  Efetuando Ping ... " -ForegroundColor Green
             ping -n 2 $ip | Select-String "bytes=32"
             Write-Host "`n`nO host: $ip :ONLINE" -ForegroundColor Green
         } else {
@@ -601,35 +602,62 @@ function Wmap {
             Write-Host $ip
         }
 
-        Write-Host "`nLista de IPs gerada com sucesso!" -ForegroundColor Green
-        }
-
-    function Pingar-Ip-Rede {
-        Write-Host "`n( esse comando vai pingar todos os enderecos de 1 - 254 pode levar ate 20 minutos )"
+        Write-Host "`n`nLista de IPs gerada com sucesso!" -ForegroundColor Green
+    }
+  
+    function Varredura-IP {
+        Write-Host "`nSobre - Este comando ira fazer uma varredura do endereco 1 - 254 ( ate 5 min ) `n`n"
         $baseIP = Read-Host "Digite a parte inicial do IP (Ex: 192.168.10.)"
 
         if (-not $baseIP.EndsWith(".")) {
-            Write-Host "Formato invalido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
+            Write-Host "Formato inválido. Certifique-se de incluir o ponto final (Ex: 192.168.10.)" -ForegroundColor Red
             return
         }
 
-        Write-Host "`nPingando enderecos de 1 a 254 do IP $baseIP ..." -ForegroundColor Yellow
+        Write-Host "`nPingando enderecos de 1 a 254 do IP $baseIP.." -ForegroundColor Yellow
+        Write-Host "Pressione Ctrl+C para cancelar a qualquer momento`n" -ForegroundColor Cyan
 
-        # Loop para pingar cada IP na rede
-        foreach ($ip in 1..254) {
-            $fullIP = "$baseIP$ip" # Concatena a base do IP com o numero atual
-            Write-Host "`nPingando: $fullIP " -ForegroundColor Yellow
-            $result = ping -n 1 $fullIP | Select-String "bytes=32"
+        $activeHosts = @()
+        $total = 254
+        $count = 0
 
-            # Exibe o resultado do ping
-            if ($result) {
-                Write-Host "$fullIP respondeu ao ping." -ForegroundColor Green
-            } else {
-                Write-Host "$fullIP nao respondeu ao ping." -ForegroundColor Red
+        # Configuração para permitir cancelamento com Ctrl+C
+        [console]::TreatControlCAsInput = $false
+
+        try {
+            foreach ($ip in 1..254) {
+                $count++
+                $fullIP = "$baseIP$ip"
+                $progress = [math]::Round(($count/$total)*100, 2)
+                Write-Progress -Activity "Varredura de rede em andamento" -Status "$progress% completo" -PercentComplete $progress -CurrentOperation "Testando $fullIP"
+
+                # Ping otimizado com timeout reduzido
+                $ping = New-Object System.Net.NetworkInformation.Ping
+                $reply = $ping.Send($fullIP, 200) # Timeout de 200ms
+                
+                if ($reply.Status -eq 'Success') {
+                    Write-Host "$fullIP respondeu ao ping." -ForegroundColor Green
+                    $activeHosts += $fullIP
+                }
+                # Não exibe os que não responderam para não poluir a tela
             }
         }
+        catch {
+            Write-Host "`nVarredura interrompida pelo usuário." -ForegroundColor Yellow
+        }
+        finally {
+            Write-Progress -Activity "Varredura de rede" -Completed
+            [console]::TreatControlCAsInput = $true
+        }
 
-        Write-Host "`nPing conclui­do!" -ForegroundColor Yellow
+        Write-Host "`nResumo:"
+        Write-Host "Hosts ativos encontrados: $($activeHosts.Count)" -ForegroundColor Green
+        if ($activeHosts.Count -gt 0) {
+            Write-Host "Lista de hosts ativos:"
+            $activeHosts | ForEach-Object { Write-Host $_ -ForegroundColor Green }
+        }
+
+        Write-Host "`nVarredura concluida!" -ForegroundColor Yellow
     }
 
     function Pingar-Porta-IP {
@@ -749,7 +777,7 @@ function Wmap {
         switch ($choice) {
             1 { Pingar-Ip }
             2 { Criar-Lista }
-            3 { Pingar-Ip-Rede }
+            3 { Varredura-IP }
             4 { Pingar-Porta-IP }
             5 { Pingar-Todas-Portas-Ip }
             6 { Pingar-Portas-Comuns-Ip }
@@ -763,7 +791,6 @@ function Wmap {
         }
     } while ($choice -ne 0)
 }
-
 function Busca-Por-DNS {
         $headers = @{
             "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.0.0 Safari/537.36"
