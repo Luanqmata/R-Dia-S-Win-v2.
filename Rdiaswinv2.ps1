@@ -149,8 +149,8 @@ function Show-UserInfo {
     }
 
   function Create-User {
-    $username = Read-Host "`nDigite o nome do novo usuário"
-    $password = Read-Host "Digite a senha para o novo usuário" -AsSecureString
+    $username = Read-Host "`nDigite o nome do novo usuario"
+    $password = Read-Host "Digite a senha para o novo usuario" -AsSecureString
     $plainPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
         [Runtime.InteropServices.Marshal]::SecureStringToBSTR($password)
     )
@@ -164,14 +164,14 @@ function Show-UserInfo {
 
         # Verifica se o usuário realmente foi criado
         if (Get-LocalUser -Name $username -ErrorAction SilentlyContinue) {
-            Write-Host "`nUsuário '$username' criado com sucesso!" -ForegroundColor Green
+            Write-Host "`nUsuario '$username' criado com sucesso!" -ForegroundColor Green
         }
         else {
-            Write-Host "`nErro: Usuário '$username' nao foi criado." -ForegroundColor Red
+            Write-Host "`nErro: Usuario '$username' nao foi criado." -ForegroundColor Red
         }
     }
     Catch {
-        Write-Host "`nFalha ao tentar criar o usuário: $_" -ForegroundColor Red
+        Write-Host "`nFalha ao tentar criar o usuario: $_" -ForegroundColor Red
     }
 
     Write-Host "`nPressione Enter para continuar..." -ForegroundColor Cyan
@@ -379,26 +379,128 @@ function Melhora-Previlegios {
     }
 }
 
-function Show-TCPPorts {
-    Write-Host "`n              === Portas TCP Abertas ===" -ForegroundColor Green
+function Servicos {
 
-    $portasTCP = Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, State, OwningProcess
+    function Mostrar_menu{
+        Clear-Host
+        Write-Host "`n`n`n`n`n"
+        Write-Host "==================================================" -ForegroundColor Yellow
+        Write-Host "||              === SERVICOS ===                ||" -ForegroundColor Yellow
+        Write-Host "==================================================" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   1. Servicos atuais                         ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   2. Listar portas UDP abertas               ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   3. Listar portas TCP abertas               ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "||   0. Menu Principal                          ||" -ForegroundColor Yellow
+        Write-Host "||                                              ||" -ForegroundColor Yellow
+        Write-Host "==================================================`n`n" -ForegroundColor Yellow
 
-    if ($portasTCP.Count -eq 0) {
-        Write-Host "Nenhuma porta TCP aberta encontrada." -ForegroundColor Red
+    }
+
+
+    function Show-TCPPorts {
+        Write-Host "`n              === Portas TCP Abertas ===" -ForegroundColor Green
+
+        $portasTCP = Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, State, OwningProcess
+
+        if ($portasTCP.Count -eq 0) {
+            Write-Host "Nenhuma porta TCP aberta encontrada." -ForegroundColor Red
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+            $null = Read-Host
+
+            Clear-Host
+        }
+        else {
+            $portasTCP | ForEach-Object {
+                $process = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
+                $appName = if ($process) { $process.ProcessName } else { "N/A" }
+                $_ | Add-Member -MemberType NoteProperty -Name "AppName" -Value $appName -Force
+                $_.State = "Escutando"
+                $_
+            } | Format-Table -Property LocalAddress, LocalPort, State, OwningProcess, AppName -AutoSize
+
+            $opcao = Read-Host "`nDeseja encerrar algum processo? (1 - Encerrar, 0 - Voltar ao menu)"
+            if ($opcao -eq 1) {
+                $processID = Read-Host "Digite o ID do processo que deseja encerrar"
+                Stop-Process -Id $processID -Force -ErrorAction SilentlyContinue
+                if ($?) {
+                    Write-Host "Processo $processID encerrado com sucesso." -ForegroundColor Green
+                }
+                else {
+                    Write-Host "Falha ao encerrar o processo $processID." -ForegroundColor Red
+                }
+            }
+            elseif ($opcao -eq 0) {
+                Write-Host "Voltando ao menu de servicos." -ForegroundColor Yellow
+            }
+            else {
+                Write-Host "Opcao invalida. Voltando ao menu de servicos." -ForegroundColor Red
+            }
+
+            Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
+            $null = Read-Host
+
+            Clear-Host
+        }
+
+        Write-Host "=========================`n"
+    }
+
+    function Show-UDPPorts {
+        Write-Host "`n              === Portas UDP Abertas ===" -ForegroundColor Yellow
+
+        
+        $portasUDP = Get-NetUDPEndpoint | Select-Object LocalAddress, LocalPort, OwningProcess
+
+        if ($portasUDP.Count -eq 0) {
+            Write-Host "Nenhuma porta UDP aberta encontrada." -ForegroundColor Red
+        }
+        else {
+            $portasUDP | ForEach-Object {
+                $process = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
+                $appName = if ($process) { $process.ProcessName } else { "N/A" }
+                $_ | Add-Member -MemberType NoteProperty -Name "AppName" -Value $appName -Force
+                $_ | Add-Member -MemberType NoteProperty -Name "State" -Value "Escutando" -Force
+                $_
+            } | Format-Table -Property LocalAddress, LocalPort, State, OwningProcess, AppName -AutoSize
+
+            $opcao = Read-Host "`nDeseja encerrar algum processo? (1 - Encerrar, 0 - Voltar ao menu)"
+            if ($opcao -eq 1) {
+                $processID = Read-Host "Digite o ID do processo que deseja encerrar"
+                Stop-Process -Id $processID -Force -ErrorAction SilentlyContinue
+                if ($?) {
+                    Write-Host "Processo $processID encerrado com sucesso." -ForegroundColor Green
+                }
+                else {
+                    Write-Host "Falha ao encerrar o processo $processID." -ForegroundColor Red
+                }
+            }
+            elseif ($opcao -eq 0) {
+                Write-Host "Voltando ao menu de servicos." -ForegroundColor Yellow
+            }
+            else {
+                Write-Host "Opcao invalida. Voltando ao menu de servicos." -ForegroundColor Red
+            }
+        }
+
         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
         $null = Read-Host
 
         Clear-Host
+
+        Write-Host "=========================`n"
     }
-    else {
-        $portasTCP | ForEach-Object {
-            $process = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
-            $appName = if ($process) { $process.ProcessName } else { "N/A" }
-            $_ | Add-Member -MemberType NoteProperty -Name "AppName" -Value $appName -Force
-            $_.State = "Escutando"
-            $_
-        } | Format-Table -Property LocalAddress, LocalPort, State, OwningProcess, AppName -AutoSize
+
+    function Show-Apps {
+        $usuarioAtivo = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+
+        $processos = Get-Process | Where-Object { $_.SessionId -eq (Get-Process -Id $PID).SessionId } | Select-Object Id, ProcessName, MainWindowTitle, Path
+
+        Write-Host "`n=== Aplicativos em Execucao no Perfil do Usuario Ativo ===" -ForegroundColor Cyan
+        $processos | Format-Table -AutoSize -Property Id, ProcessName, MainWindowTitle, Path
 
         $opcao = Read-Host "`nDeseja encerrar algum processo? (1 - Encerrar, 0 - Voltar ao menu)"
         if ($opcao -eq 1) {
@@ -412,96 +514,34 @@ function Show-TCPPorts {
             }
         }
         elseif ($opcao -eq 0) {
-            Write-Host "Voltando ao menu inicial." -ForegroundColor Yellow
+            Write-Host "Voltando ao menu de servicos." -ForegroundColor Yellow
         }
         else {
-            Write-Host "Opcao invalida. Voltando ao menu inicial." -ForegroundColor Red
+            Write-Host "Opcao invalida. Voltando ao menu de servicos." -ForegroundColor Red
         }
-
         Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
         $null = Read-Host
 
         Clear-Host
+
     }
 
-    Write-Host "=========================`n"
-}
+    do {
+        Mostrar_menu
+        $escolha = Read-Host "Escolha uma das opcoes (0-3)"
 
-function Show-UDPPorts {
-    Write-Host "`n              === Portas UDP Abertas ===" -ForegroundColor Yellow
-
-    
-    $portasUDP = Get-NetUDPEndpoint | Select-Object LocalAddress, LocalPort, OwningProcess
-
-    if ($portasUDP.Count -eq 0) {
-        Write-Host "Nenhuma porta UDP aberta encontrada." -ForegroundColor Red
-    }
-    else {
-        $portasUDP | ForEach-Object {
-            $process = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
-            $appName = if ($process) { $process.ProcessName } else { "N/A" }
-            $_ | Add-Member -MemberType NoteProperty -Name "AppName" -Value $appName -Force
-            $_ | Add-Member -MemberType NoteProperty -Name "State" -Value "Escutando" -Force
-            $_
-        } | Format-Table -Property LocalAddress, LocalPort, State, OwningProcess, AppName -AutoSize
-
-        $opcao = Read-Host "`nDeseja encerrar algum processo? (1 - Encerrar, 0 - Voltar ao menu)"
-        if ($opcao -eq 1) {
-            $processID = Read-Host "Digite o ID do processo que deseja encerrar"
-            Stop-Process -Id $processID -Force -ErrorAction SilentlyContinue
-            if ($?) {
-                Write-Host "Processo $processID encerrado com sucesso." -ForegroundColor Green
-            }
-            else {
-                Write-Host "Falha ao encerrar o processo $processID." -ForegroundColor Red
+        switch ($escolha) {
+            '1' { Show-TCPPorts }
+            '2' { Show-UDPPorts }
+            '3' { Show-Apps }
+            '0' { Write-Host "`nVoltando para o menu inicial ..." -ForegroundColor Yellow }
+            Default { Write-Host "`nOpcao invalida. Escolha um numero entre 0 e 3." -ForegroundColor Red 
+                        Write-Host "`nPressione Enter para continuar..." -ForegroundColor Red
+                        $null = Read-Host
             }
         }
-        elseif ($opcao -eq 0) {
-            Write-Host "Voltando ao menu inicial." -ForegroundColor Yellow
-        }
-        else {
-            Write-Host "Opcao invalida. Voltando ao menu inicial." -ForegroundColor Red
-        }
-    }
 
-    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-    $null = Read-Host
-
-    Clear-Host
-
-    Write-Host "=========================`n"
-}
-
-function Show-Apps {
-    $usuarioAtivo = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-
-    $processos = Get-Process | Where-Object { $_.SessionId -eq (Get-Process -Id $PID).SessionId } | Select-Object Id, ProcessName, MainWindowTitle, Path
-
-    Write-Host "`n=== Aplicativos em Execucao no Perfil do Usuario Ativo ===" -ForegroundColor Cyan
-    $processos | Format-Table -AutoSize -Property Id, ProcessName, MainWindowTitle, Path
-
-    $opcao = Read-Host "`nDeseja encerrar algum processo? (1 - Encerrar, 0 - Voltar ao menu)"
-    if ($opcao -eq 1) {
-        $processID = Read-Host "Digite o ID do processo que deseja encerrar"
-        Stop-Process -Id $processID -Force -ErrorAction SilentlyContinue
-        if ($?) {
-            Write-Host "Processo $processID encerrado com sucesso." -ForegroundColor Green
-        }
-        else {
-            Write-Host "Falha ao encerrar o processo $processID." -ForegroundColor Red
-        }
-    }
-    elseif ($opcao -eq 0) {
-        Write-Host "Voltando ao menu inicial." -ForegroundColor Yellow
-    }
-    else {
-        Write-Host "Opcao invalida. Voltando ao menu inicial." -ForegroundColor Red
-    }
-    Write-Host "`nPressione Enter para continuar..." -ForegroundColor Green
-    $null = Read-Host
-
-    Clear-Host
-
+    } while ($escolha -ne '0')
 }
 
 function Wmap {
@@ -1029,21 +1069,17 @@ while ($true) {
     Write-Host "||                                                                  ||" -ForegroundColor Green
     Write-Host "||                 2. Informacoes avancadas de Usuarios             ||" -ForegroundColor Green
     Write-Host "||                                                                  ||" -ForegroundColor Green
-    Write-Host "||                 3. Listar portas TCP abertas                     ||" -ForegroundColor Green
+    Write-Host "||                 3. Servicos e Portas ( UDP / TCP )               ||" -ForegroundColor Green
     Write-Host "||                                                                  ||" -ForegroundColor Green
-    Write-Host "||                 4. Listar portas UDP abertas                     ||" -ForegroundColor Green
+    Write-Host "||                 4. WMap                                          ||" -ForegroundColor Green
     Write-Host "||                                                                  ||" -ForegroundColor Green
-    Write-Host "||                 5. Listar aplicativos em uso                     ||" -ForegroundColor Green
-    Write-Host "||                                                                  ||" -ForegroundColor Green
-    Write-Host "||                 6. WMap                                          ||" -ForegroundColor Green
-    Write-Host "||                                                                  ||" -ForegroundColor Green
-    Write-Host "||                 7. DNS Requests                                  ||" -ForegroundColor Green
+    Write-Host "||                 5. DNS Requests                                  ||" -ForegroundColor Green
     Write-Host "||                                                                  ||" -ForegroundColor Green
     Write-Host "||                 0. Sair                                          ||" -ForegroundColor Green
     Write-Host "||                                                                  ||" -ForegroundColor Green
     Write-Host "+====================================================================+" -ForegroundColor Green
 
-    $opcao = Read-Host "`nEscolha uma das opcoes de 1 a 7"
+    $opcao = Read-Host "`nEscolha uma das opcoes de 1 a 5"
     
     switch ($opcao){
         1{
@@ -1053,18 +1089,12 @@ while ($true) {
           Show-UserInfo
          }
         3 {
-          Show-TCPPorts
+          Servicos
         }
         4 {
-          Show-UDPPorts
-        }
-        5 {
-          Show-Apps
-        }
-        6 {
           Wmap
         }
-        7 {
+        5 {
           Busca-Por-DNS
         }
         0 {
