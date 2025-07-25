@@ -559,22 +559,22 @@ function Wmap {
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   3. Varredura de pings (192.168.10.xxx)     ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   4. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
+        Write-Host "||   4. Descobrir portas abertas de um ip       ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   5. Pingar todas as Portas de um IP         ||" -ForegroundColor Yellow
+        Write-Host "||   5. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   6. Pingar 100 portas mais usadas           ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   0. Menu Principal                          ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "==================================================`n`n" -ForegroundColor Yellow
     }
 
     function Pingar-Ip {
+        Clear-Host
         Write-Host "`n"
         $ip = Read-Host "Digite o IP"
-        Write-Host "`nEfetuando ping no host: $ip"
+        Write-Host "`nEfetuando ping no host: $ip" 
         $pingResult = Test-Connection -ComputerName $ip -Count 3 -Quiet
         if ($pingResult) {
             Write-Host "`n                  Efetuando Ping ... " -ForegroundColor Green
@@ -606,7 +606,8 @@ function Wmap {
     }
   
     function Varredura-IP {
-        Write-Host "`nSobre - Este comando ira fazer uma varredura do endereco 1 - 254 ( ate 5 min ) `n`n"
+        
+        Write-Host "`nSobre - Este comando ira fazer uma varredura do endereco 1 - 254 ( ate 5 min ) `n`n" -ForegroundColor Yellow
         $baseIP = Read-Host "Digite a parte inicial do IP (Ex: 192.168.10.)"
 
         if (-not $baseIP.EndsWith(".")) {
@@ -660,41 +661,7 @@ function Wmap {
         Write-Host "`nVarredura concluida!" -ForegroundColor Yellow
     }
 
-    function Pingar-Porta-IP {
-        Write-Host "`n"
-        $ip = Read-Host "Digite o IP (alvo)"
-        $porta = Read-Host "Digite a porta"
-
-        if (-not $ip -or -not $porta) {
-            Write-Host "Dados Inseridos corretamente..." -ForegroundColor Red
-            return
-        }
-
-        if (-not ($porta -match '^\d+$') -or [int]$porta -lt 1 -or [int]$porta -gt 65535) {
-            Write-Host "`nPorta invalida. A porta deve ser um numero entre 1 e 65535." -ForegroundColor Red
-            return
-        }
-
-        Write-Host "`nVerificando a porta $porta no IP $ip..." -ForegroundColor Yellow
-
-        $resultado = Test-NetConnection -ComputerName $ip -Port $porta -WarningAction SilentlyContinue
-
-        Write-Host "`n=== Detalhes da Conexao ===" -ForegroundColor Cyan
-        Write-Host "ComputerName: $($resultado.ComputerName)" -ForegroundColor Green
-        Write-Host "RemoteAddress: $($resultado.RemoteAddress)" -ForegroundColor Green
-        Write-Host "RemotePort: $($resultado.RemotePort)" -ForegroundColor Green
-        Write-Host "InterfaceAlias: $($resultado.InterfaceAlias)" -ForegroundColor Green
-        Write-Host "SourceAddress: $($resultado.SourceAddress)" -ForegroundColor Green
-        Write-Host "PingReplyDetails (RTT): $($resultado.PingReplyDetails.RoundtripTime) ms" -ForegroundColor Green
-        Write-Host "TcpTestSucceeded: $($resultado.TcpTestSucceeded)" -ForegroundColor Green
-
-        if ($resultado.TcpTestSucceeded) {
-            Write-Host "`nPorta $porta esta aberta no IP $ip." -ForegroundColor Green
-        } else {
-            Write-Host "`nPorta $porta esta fechada no IP $ip." -ForegroundColor Red
-        }
-    }
-
+    # subfuncao de pingar todas as portas ip
     function Validar-IP {
         param (
             [string]$ip
@@ -703,35 +670,229 @@ function Wmap {
         return ($ip -match $regex)
     }
 
-    function Pingar-Todas-Portas-Ip {
+    function Pingar-Todas-Portas-Ip { # TOP TOP TOP
         Write-Host "`n"
-        Write-Host "Obs:(Esta acao pode levar alguns minutos:65535 portas)"
-    
+        Write-Host "Obs: Esta acao pode levar alguns minutos (65535 portas)" -ForegroundColor Yellow
+        
         do {
-            $ip = Read-Host "Digite o IP (alvo)"
+            $ip = Read-Host "`nDigite o IP (alvo)"
             if (-not (Validar-IP $ip)) {
-                Write-Host "Endereco IP invalido. Tente novamente." -ForegroundColor Yellow
+                Write-Host "`nEndereco IP invalido. Tente novamente." -ForegroundColor Yellow 
                 return
+            } else {
+                
             }
         } while (-not (Validar-IP $ip))
-    
+
         Write-Host "`n- Scan Iniciado -" -ForegroundColor Yellow
+
         $totalPortas = 65535
         $portasAbertas = @()
+        $progress = 0
 
-        for ($porta = 1; $porta -le $totalPortas; $porta++) {
-            if (Test-NetConnection $ip -Port $porta -WarningAction SilentlyContinue -InformationLevel Quiet) {
-                Write-Host "Porta $porta Aberta" -ForegroundColor Green
-                $portasAbertas += $porta
-            } else {
-                # Write-Host "Porta $porta Fechada" -ForegroundColor Red
-                Continue
+        [console]::TreatControlCAsInput = $false
+
+        try {
+            for ($porta = 1; $porta -le $totalPortas; $porta++) {
+                $progress++
+                Write-Progress -Activity "Varredura de portas em andamento" `
+                    -Status "$([math]::Round(($progress/$totalPortas)*100, 2))% completo" `
+                    -PercentComplete ($progress / $totalPortas * 100) `
+                    -CurrentOperation "Testando porta $porta"
+
+                try {
+                    $tcpClient = New-Object System.Net.Sockets.TcpClient
+                    $async = $tcpClient.BeginConnect($ip, $porta, $null, $null)
+                    $wait = $async.AsyncWaitHandle.WaitOne(200, $false)
+
+                    if ($wait -and $tcpClient.Connected) {
+                        $tcpClient.EndConnect($async)
+                        Write-Host "Porta $porta Aberta" -ForegroundColor Green
+                        $portasAbertas += $porta
+                    }
+
+                    $tcpClient.Close()
+                    $tcpClient.Dispose()
+                } catch {
+                    # Silencia erros
+                }
+            }
+        }
+        catch {
+            Write-Host "`nVarredura interrompida pelo usuário." -ForegroundColor Yellow
+        }
+        finally {
+            Write-Progress -Activity "Varredura de portas" -Completed
+            [console]::TreatControlCAsInput = $true
+        }
+
+        Write-Host "`nPortas abertas encontradas: $($portasAbertas.Count)" -ForegroundColor Green
+        if ($portasAbertas.Count -gt 0) {
+            Write-Host "Lista de portas abertas (ordenadas):"
+            $portasAbertas = $portasAbertas | Sort-Object
+            $portasAbertas | ForEach-Object { Write-Host $_ -ForegroundColor Green }
+        }
+
+        Write-Host "`nVarredura de portas concluída!" -ForegroundColor Yellow
+    }
+    # subfunção de pingar porta especifica
+    function Get-Banner {
+        param (
+            [string]$ip,
+            [int]$porta
+        )
+
+        $scheme = if ($porta -in 443, 8443) { "https" } else { "http" }
+        $url = "${scheme}://${ip}:${porta}"
+
+        try {
+            $response = Invoke-WebRequest -Uri $url -UseBasicParsing -MaximumRedirection 5 -TimeoutSec 4
+        }
+        catch {
+            return @{
+                URL = $url
+                StatusCode = "Erro"
+                StatusDesc = "Falha ao conectar"
+                Titulo = "-"
+                Server = "-"
+                ContentType = "-"
+                XPoweredBy = "-"
+                Cookies = "-"
+                Links = @()
+                Robots = "-"
+                FaviconHash = "-"
             }
         }
 
-        Write-Host "Portas abertas: $($portasAbertas -join ', ')"
+        # Titulo da pagina
+        $titulo = if ($response.Content -match '<title>(.*?)</title>') {
+            $matches[1]
+        } else {
+            "[sem título]"
+        }
+
+        # Hash do favicon
+        try {
+            $favicon = Invoke-WebRequest -Uri "$url/favicon.ico" -UseBasicParsing -TimeoutSec 3
+            $sha1 = [System.BitConverter]::ToString(
+                (New-Object -TypeName System.Security.Cryptography.SHA1Managed).ComputeHash($favicon.Content)
+            ).Replace("-", "").ToLower()
+        } catch {
+            $sha1 = "-"
+        }
+
+        # robots.txt
+        try {
+            $robots = Invoke-WebRequest -Uri "$url/robots.txt" -UseBasicParsing -TimeoutSec 2
+            $hasRobots = if ($robots.StatusCode -eq 200) { "Sim" } else { "Nao" }
+        } catch {
+            $hasRobots = "Nao"
+        }
+
+        return @{
+            URL = $response.BaseResponse.ResponseUri.AbsoluteUri
+            StatusCode = $response.StatusCode
+            StatusDesc = $response.StatusDescription
+            Titulo = $titulo
+            Server = $response.Headers["Server"]
+            ContentType = $response.Headers["Content-Type"]
+            XPoweredBy = $response.Headers["X-Powered-By"]
+            Cookies = $response.Headers["Set-Cookie"]
+            Links = ($response.Links | Select-Object -First 5 | ForEach-Object { $_.href })
+            Robots = $hasRobots
+            FaviconHash = $sha1
+        }
     }
 
+    function Pingar-Porta-Especifica {
+        <#
+        .SYNOPSIS
+            Verifica o status de uma porta específica e identifica o serviço e versão.
+        
+        .EXAMPLE
+            Pingar-Porta-Especifica
+        #>
+        Clear-Host
+        Write-Host "`n=== Verificador de Porta ===" -ForegroundColor Cyan
+
+        $ip = Read-Host "Digite o IP (alvo)"
+        $porta = Read-Host "Digite a porta"
+
+        # Validações
+        if (-not $ip -or -not $porta) {
+            Write-Host "Por favor, insira IP e porta corretamente." -ForegroundColor Red
+            return
+        }
+
+        if (-not ($porta -match '^\d+$') -or [int]$porta -lt 1 -or [int]$porta -gt 65535) {
+            Write-Host "Porta inválida. Deve ser um número entre 1 e 65535." -ForegroundColor Red
+            return
+        }
+
+        Write-Host "`nVerificando porta $porta no IP $ip..." -ForegroundColor Yellow
+        $resultado = Test-NetConnection -ComputerName $ip -Port $porta -WarningAction SilentlyContinue
+
+        # Identificação básica do serviço
+        $servico = switch ($porta) {
+            21     { "FTP" }
+            22     { "SSH" }
+            23     { "Telnet" }
+            25     { "SMTP" }
+            53     { "DNS" }
+            80     { "HTTP" }
+            110    { "POP3" }
+            143    { "IMAP" }
+            443    { "HTTPS" }
+            3306   { "MySQL" }
+            3389   { "RDP" }
+            5432   { "PostgreSQL" }
+            6379   { "Redis" }
+            8080   { "HTTP alternativo" }
+            8443   { "HTTPS alternativo" }
+            27017  { "MongoDB" }
+            5900   { "VNC" }
+            1433   { "SQL Server" }
+            default { "Serviço desconhecido" }
+        }
+
+        $status = if ($resultado.TcpTestSucceeded) {'ABERTA'} else {'FECHADA'}
+        $corStatus = if ($status -eq 'ABERTA') {'Green'} else {'Red'}
+
+        Write-Host "`n=== Resultados ===" -ForegroundColor Cyan
+        Write-Host "Endereco: $($resultado.RemoteAddress)" -ForegroundColor Green
+        Write-Host "Porta: $porta" -ForegroundColor Green
+        Write-Host "Status: $status" -ForegroundColor $corStatus
+        Write-Host "Servico: $servico" -ForegroundColor Green
+        Write-Host "Latencia: $($resultado.PingReplyDetails.RoundtripTime)ms" -ForegroundColor Green
+        Write-Host "Interface: $($resultado.InterfaceAlias)" -ForegroundColor Green
+
+        # Banner Grabbing se a porta estiver aberta
+        if ($resultado.TcpTestSucceeded) {
+                Write-Host "`nObtendo informacoes da pagina HTTP..." -ForegroundColor DarkCyan
+                $info = Get-Banner -ip $ip -porta $porta
+
+                Write-Host "`n--- Informacoes HTTP ---" -ForegroundColor Cyan
+                Write-Host "URL           : $($info.URL)" -ForegroundColor Gray
+                Write-Host "Status HTTP   : $($info.StatusCode) $($info.StatusDesc)" -ForegroundColor Gray
+                Write-Host "Titulo        : $($info.Titulo)" -ForegroundColor Gray
+                Write-Host "Servidor      : $($info.Server)" -ForegroundColor Gray
+                Write-Host "Tipo Conteudo : $($info.ContentType)" -ForegroundColor Gray
+                Write-Host "X-Powered-By  : $($info.XPoweredBy)" -ForegroundColor Gray
+                Write-Host "Cookies       : $($info.Cookies)" -ForegroundColor Gray
+                Write-Host "robots.txt    : $($info.Robots)" -ForegroundColor Gray
+                Write-Host "Favicon SHA1  : $($info.FaviconHash)" -ForegroundColor Gray
+
+                if ($info.Links.Count -gt 0) {
+                    Write-Host "`nLinks encontrados:" -ForegroundColor DarkGray
+                    $info.Links | ForEach-Object { Write-Host "- $_" -ForegroundColor DarkGray }
+                }
+
+        }
+
+        Write-Host "`nFim da verificacao." -ForegroundColor Cyan
+    }
+
+ 
     function Pingar-Portas-Comuns-Ip {
         Write-Host "`n"
     
@@ -778,8 +939,8 @@ function Wmap {
             1 { Pingar-Ip }
             2 { Criar-Lista }
             3 { Varredura-IP }
-            4 { Pingar-Porta-IP }
-            5 { Pingar-Todas-Portas-Ip }
+            4 { Pingar-Todas-Portas-Ip }
+            5 { Pingar-Porta-Especifica }
             6 { Pingar-Portas-Comuns-Ip }
             0 { Write-Host "Voltando ao menu principal..." -ForegroundColor Yellow; break }
             default { Write-Host "`nOpcao invalida. Escola um numero entre 1 a 6." -ForegroundColor Yellow }
@@ -791,6 +952,7 @@ function Wmap {
         }
     } while ($choice -ne 0)
 }
+
 function Busca-Por-DNS {
         $headers = @{
             "User-Agent" = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.0.0 Safari/537.36"
