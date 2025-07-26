@@ -544,7 +544,6 @@ function Servicos {
     } while ($escolha -ne '0')
 }
 
-
 function Wmap {
     function Show-Menu {
         Clear-Host
@@ -559,11 +558,11 @@ function Wmap {
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   3. Varredura de pings (192.168.10.xxx)     ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   4. Descobrir portas abertas de um ip       ||" -ForegroundColor Yellow
+        Write-Host "||   4. Descobrir portas abertas de um ip       ||" -ForegroundColor Yellow 
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   5. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
+        Write-Host "||   5. Pingar 100 portas mais usadas           ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
-        Write-Host "||   6. Pingar 100 portas mais usadas           ||" -ForegroundColor Yellow
+        Write-Host "||   6. Pingar Porta Especifica ( info )        ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
         Write-Host "||   0. Menu Principal                          ||" -ForegroundColor Yellow
         Write-Host "||                                              ||" -ForegroundColor Yellow
@@ -670,7 +669,7 @@ function Wmap {
         return ($ip -match $regex)
     }
 
-    function Pingar-Todas-Portas-Ip { # TOP TOP TOP
+    function Pingar-Todas-Portas-Ip { # TOP TOP TOP TESTAR COM MAQ VIRTUAL DEPOIS
         Write-Host "`n"
         Write-Host "Obs: Esta acao pode levar alguns minutos (65535 portas)" -ForegroundColor Yellow
         
@@ -894,42 +893,141 @@ function Wmap {
 
  
     function Pingar-Portas-Comuns-Ip {
-        Write-Host "`n"
-    
+        <#
+        .SYNOPSIS
+            Varre as 100 portas mais comuns de um IP e mostra as que estão abertas.
+        .DESCRIPTION
+            Realiza um scan rápido nas portas mais utilizadas, mostrando resultados em tempo real
+            com informações de serviços conhecidos e tempo de execução.
+        .EXAMPLE
+            Pingar-Portas-Comuns-Ip
+        #>
+
+        # Configuração inicial
+        Write-Host "`n=== Scan das Portas Mais Comuns ===" -ForegroundColor Cyan
+        Write-Host "`nObs: Esta acao varre as 100 portas mais comuns" -ForegroundColor Yellow
+
+        # Validação do IP
         do {
-            Write-Host "Obs:(Esta acao pode levar alguns minutos:100 portas)"
-            $ip = Read-Host "Digite o IP (alvo)"
+            $ip = Read-Host "`nDigite o IP (alvo)"
             if (-not (Validar-IP $ip)) {
-                Write-Host "Endereco IP invlido. Tente novamente." -ForegroundColor Yellow
-                return
+                Write-Host "`nEndereco IP invalido. Tente novamente." -ForegroundColor Red
+                Return
             }
         } while (-not (Validar-IP $ip))
-    
-        Write-Host "`nIniciando Scan nas 100 portas mais comuns..."
 
-       $portasComuns = @(
-            20, 21, 22, 23, 25, 53, 67, 68, 69, 80, 110, 123, 135, 137, 138, 139, 143, 161, 162, 389, 443, 
-            445, 465, 500, 512, 513, 514, 587, 636, 873, 993, 995, 1025, 1026, 1027, 1028, 1029, 1080, 1194, 
-            1433, 1434, 1701, 1723, 1812, 1813, 1900, 2049, 2181, 2375, 2376, 2483, 2484, 3306, 3389, 3478, 
-            4500, 5000, 5060, 5061, 5353, 5355, 5432, 5555, 5900, 5985, 5986, 6000, 6379, 6667, 7000, 8080, 
-            8081, 8192, 8443, 8888, 9000, 9090, 9100, 9200, 9300, 9418, 9999, 10000, 11211, 25565, 27017, 
-            27018, 27019, 28015, 28017, 31337, 32768, 37777, 49152, 49153, 49154, 49155, 49156, 49157, 
-            49158, 49159, 49160, 49161, 49162, 49163, 49164, 49165
+        Write-Host "`nIniciando varredura nas portas mais comuns em $ip ..." -ForegroundColor Cyan
+        $inicio = Get-Date
+
+        # Lista de portas e serviços melhorada
+        $portasEServicos = @(
+            [PSCustomObject]@{Porta=20; Servico="FTP Data"},
+            [PSCustomObject]@{Porta=21; Servico="FTP Control"},
+            [PSCustomObject]@{Porta=22; Servico="SSH"},
+            [PSCustomObject]@{Porta=23; Servico="Telnet"},
+            [PSCustomObject]@{Porta=25; Servico="SMTP"},
+            [PSCustomObject]@{Porta=53; Servico="DNS"},
+            [PSCustomObject]@{Porta=67; Servico="DHCP Server"},
+            [PSCustomObject]@{Porta=68; Servico="DHCP Client"},
+            [PSCustomObject]@{Porta=69; Servico="TFTP"},
+            [PSCustomObject]@{Porta=80; Servico="HTTP"},
+            [PSCustomObject]@{Porta=110; Servico="POP3"},
+            [PSCustomObject]@{Porta=123; Servico="NTP"},
+            [PSCustomObject]@{Porta=135; Servico="RPC"},
+            [PSCustomObject]@{Porta=137; Servico="NetBIOS Name"},
+            [PSCustomObject]@{Porta=138; Servico="NetBIOS Datagram"},
+            [PSCustomObject]@{Porta=139; Servico="NetBIOS Session"},
+            [PSCustomObject]@{Porta=143; Servico="IMAP"},
+            [PSCustomObject]@{Porta=161; Servico="SNMP"},
+            [PSCustomObject]@{Porta=162; Servico="SNMP Trap"},
+            [PSCustomObject]@{Porta=389; Servico="LDAP"},
+            [PSCustomObject]@{Porta=443; Servico="HTTPS"},
+            [PSCustomObject]@{Porta=445; Servico="SMB"},
+            [PSCustomObject]@{Porta=465; Servico="SMTPS"},
+            [PSCustomObject]@{Porta=500; Servico="IPSec"},
+            [PSCustomObject]@{Porta=587; Servico="SMTP Submission"},
+            [PSCustomObject]@{Porta=636; Servico="LDAPS"},
+            [PSCustomObject]@{Porta=993; Servico="IMAPS"},
+            [PSCustomObject]@{Porta=995; Servico="POP3S"},
+            [PSCustomObject]@{Porta=1025; Servico="MS RPC"},
+            [PSCustomObject]@{Porta=1433; Servico="SQL Server"},
+            [PSCustomObject]@{Porta=1434; Servico="SQL Monitor"},
+            [PSCustomObject]@{Porta=1701; Servico="L2TP"},
+            [PSCustomObject]@{Porta=1723; Servico="PPTP"},
+            [PSCustomObject]@{Porta=2049; Servico="NFS"},
+            [PSCustomObject]@{Porta=3306; Servico="MySQL"},
+            [PSCustomObject]@{Porta=3389; Servico="RDP"},
+            [PSCustomObject]@{Porta=4500; Servico="IPSec NAT-T"},
+            [PSCustomObject]@{Porta=5060; Servico="SIP"},
+            [PSCustomObject]@{Porta=5061; Servico="SIP TLS"},
+            [PSCustomObject]@{Porta=5432; Servico="PostgreSQL"},
+            [PSCustomObject]@{Porta=5900; Servico="VNC"},
+            [PSCustomObject]@{Porta=5985; Servico="WinRM HTTP"},
+            [PSCustomObject]@{Porta=5986; Servico="WinRM HTTPS"},
+            [PSCustomObject]@{Porta=6379; Servico="Redis"},
+            [PSCustomObject]@{Porta=8080; Servico="HTTP Alt"},
+            [PSCustomObject]@{Porta=8443; Servico="HTTPS Alt"},
+            [PSCustomObject]@{Porta=8888; Servico="HTTP Alt2"},
+            [PSCustomObject]@{Porta=9000; Servico="Hadoop NameNode"},
+            [PSCustomObject]@{Porta=9090; Servico="Prometheus"},
+            [PSCustomObject]@{Porta=9200; Servico="Elasticsearch"},
+            [PSCustomObject]@{Porta=9300; Servico="Elasticsearch Cluster"},
+            [PSCustomObject]@{Porta=10000; Servico="Webmin"},
+            [PSCustomObject]@{Porta=11211; Servico="Memcached"},
+            [PSCustomObject]@{Porta=27017; Servico="MongoDB"},
+            [PSCustomObject]@{Porta=27018; Servico="MongoDB Shard"},
+            [PSCustomObject]@{Porta=27019; Servico="MongoDB Router"}
         )
 
-        $portasAbertas = @()
+        $portasAbertas = [System.Collections.Generic.List[object]]::new()
+        $contador = 0
+        $totalPortas = $portasEServicos.Count
 
-        foreach ($porta in $portasComuns) {
-            if (Test-NetConnection $ip -Port $porta -WarningAction SilentlyContinue -InformationLevel Quiet) {
-                Write-Host "Porta $porta Aberta" -ForegroundColor Green
-                $portasAbertas += $porta
-            } else {
-                Write-Host "Porta $porta Fechada" -ForegroundColor Red
+        # Barra de progresso
+        foreach ($item in $portasEServicos) {
+            $contador++
+            $porcentagem = [math]::Round(($contador / $totalPortas) * 100, 2)
+            
+            Write-Progress -Activity "Varredura em andamento" `
+                        -Status "Testando porta $($item.Porta) ($($item.Servico))" `
+                        -PercentComplete $porcentagem `
+                        -CurrentOperation "Portas testadas: $contador/$totalPortas"
+
+            try {
+                $teste = Test-NetConnection -ComputerName $ip -Port $item.Porta -WarningAction SilentlyContinue -InformationLevel Quiet
+                if ($teste) {
+                    $resultado = [PSCustomObject]@{
+                        Porta = $item.Porta
+                        Servico = $item.Servico
+                        Status = "ABERTA"
+                    }
+                    $portasAbertas.Add($resultado)
+                    Write-Host "[+] Porta $($item.Porta) ABERTA- Possivel:($($item.Servico))" -ForegroundColor Green
+                } else {
+                    Write-Host "[-] Porta $($item.Porta) fechada ($($item.Servico))" -ForegroundColor DarkGray
+                }
+            } catch {
+                Write-Host "[!] Erro ao verificar porta $($item.Porta): $_" -ForegroundColor Red
             }
         }
 
-        Write-Host "Portas abertas: $($portasAbertas -join ', ')"
+        # Resumo final
+        $fim = Get-Date
+        $duracao = ($fim - $inicio).TotalSeconds
+        Write-Host "`n=== Resumo Final ===" -ForegroundColor Cyan
+
+        if ($portasAbertas.Count -gt 0) {
+            Write-Host "`nTotal de portas abertas encontradas: $($portasAbertas.Count)" -ForegroundColor Green
+            Write-Host "`nDetalhes das portas abertas:" -ForegroundColor Yellow
+            $portasAbertas | Sort-Object Porta | Format-Table -AutoSize -Property Porta, Servico, Status | Out-Host
+        } else {
+            Write-Host "Nenhuma porta aberta detectada." -ForegroundColor Yellow
+        }
+
+        Write-Host "`nTempo total: $([math]::Round($duracao, 2)) segundos" -ForegroundColor DarkCyan
+        Write-Host "`nVarredura concluida." -ForegroundColor Cyan
     }
+
 
     do {
         Show-Menu
@@ -940,8 +1038,8 @@ function Wmap {
             2 { Criar-Lista }
             3 { Varredura-IP }
             4 { Pingar-Todas-Portas-Ip }
-            5 { Pingar-Porta-Especifica }
-            6 { Pingar-Portas-Comuns-Ip }
+            5 { Pingar-Portas-Comuns-Ip }
+            6 { Pingar-Porta-Especifica }
             0 { Write-Host "Voltando ao menu principal..." -ForegroundColor Yellow; break }
             default { Write-Host "`nOpcao invalida. Escola um numero entre 1 a 6." -ForegroundColor Yellow }
         }
