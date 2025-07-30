@@ -1,3 +1,9 @@
+# R-Dia-S-Win-v2 - Projeto de código aberto
+# Copyright (C) 2025 Luan Calazans
+# Licenciado sob a GNU AGPL v3. Veja o arquivo LICENSE para mais detalhes.
+# Contato: https://www.linkedin.com/in/luan-bsc
+
+
 function Show-ComputerInfo {
     $usuario = $env:USERNAME
 
