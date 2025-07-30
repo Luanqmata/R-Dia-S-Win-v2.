@@ -1,4 +1,5 @@
 # R-Dia-S-Win-v2
+## sobre: O intuito desse programa é levantamento de informações de um computador , sendo a pessoa estando sentada na frente do computador da vitima , ou com acesso remoto Revshell.
 
 ![image](https://github.com/user-attachments/assets/9e84ea8c-4704-46d8-a0fc-c83b97b022f1)
 ------
